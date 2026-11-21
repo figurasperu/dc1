@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo Interactivo de Figuritas</title>
+  <title>Álbum Coleccionable (01 al 180)</title>
   <!-- Fuente Inter para una lectura limpia y moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,99 +24,136 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-800 pb-36">
 
-  <!-- ==================== ENCABEZADO SUPERIOR ==================== -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4">
-      <div class="flex items-center justify-between gap-3">
+  <!-- ==================== AVISO DE MODO DEMOSTRACIÓN ==================== -->
+  <div id="demo-banner" class="hidden bg-amber-50 border-b border-amber-200 text-amber-900">
+    <div class="max-w-5xl mx-auto px-4 py-2 flex items-center justify-center gap-2 text-xs font-medium text-center">
+      <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span><strong>Modo demostración</strong> — Pega tu enlace CSV de Google Sheets en <code class="px-1 py-0.5 rounded bg-amber-100 font-mono text-[11px]">CONFIG</code> para conectar tu stock real.</span>
+    </div>
+  </div>
+
+  <!-- ==================== ENCABEZADO COMPACTO ==================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 py-3">
+      <div class="flex items-start sm:items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
-          <!-- Icono de tienda -->
+          <!-- Icono del álbum -->
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           </div>
           <div class="min-w-0">
-            <h1 id="store-title" class="text-lg sm:text-xl font-extrabold text-slate-900 truncate">Catálogo de Figuritas</h1>
-            <p class="text-xs sm:text-sm text-slate-500 truncate">Marca las que te faltan y envía tu pedido por WhatsApp</p>
+            <h1 id="album-title" class="text-base sm:text-xl font-extrabold text-slate-900 truncate">Álbum Coleccionable (01 al 180)</h1>
+            <p id="album-subtitle" class="text-xs sm:text-sm text-slate-500 truncate">Marca las figuritas que te faltan y envía tu pedido</p>
           </div>
         </div>
 
-        <!-- Botón rápido para ver resumen en pantallas medianas/grandes -->
+        <!-- Botón pequeño para recargar stock en vivo -->
         <button
-          id="header-summary-btn"
+          id="reload-stock-btn"
           type="button"
-          class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors shrink-0"
+          title="Actualizar stock desde Google Sheets"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs font-semibold transition-colors shrink-0"
         >
-          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          <svg id="reload-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span>Mi pedido</span>
-          <span id="header-badge" class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-600 text-white">0</span>
+          <span class="hidden sm:inline">Actualizar stock</span>
+          <span class="sm:hidden">Stock</span>
         </button>
       </div>
 
-      <!-- Selector de Álbumes (Pestañas) -->
-      <nav aria-label="Selector de álbumes" class="mt-3 pt-2 border-t border-slate-100">
-        <div id="album-tabs" class="flex gap-2 overflow-x-auto pb-1">
-          <!-- Se renderiza dinámicamente desde CONFIG.albumes -->
+      <!-- Contador rápido de disponibles vs agotadas y leyenda de colores -->
+      <div class="mt-2.5 pt-2.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2 text-xs">
+          <span id="stock-available-pill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            0 disponibles
+          </span>
+          <span id="stock-out-pill" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-semibold">
+            0 agotadas
+          </span>
+          <span id="last-updated-label" class="hidden md:inline text-[11px] text-slate-400"></span>
         </div>
-      </nav>
+
+        <!-- Leyenda de 4 estados -->
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium text-slate-600">
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-white border border-slate-300 inline-block"></span>
+            Normal
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-amber-50 border-2 border-amber-400 inline-block"></span>
+            Especial
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-emerald-500 border border-emerald-600 inline-block"></span>
+            Seleccionada
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-slate-200 border border-slate-200 inline-block opacity-70"></span>
+            Agotada
+          </span>
+        </div>
+      </div>
     </div>
   </header>
 
   <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
-  <main class="max-w-6xl mx-auto px-4 pt-4 sm:pt-6 space-y-4">
+  <main class="max-w-5xl mx-auto px-4 pt-4 space-y-4">
 
-    <!-- Tarjeta de información del álbum activo -->
-    <section class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <h2 id="active-album-name" class="text-lg font-bold text-slate-900">Cargando álbum...</h2>
-            <span id="active-album-stock-pill" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
-              0 disponibles
-            </span>
-          </div>
-          <p id="active-album-subtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5"></p>
-        </div>
+    <!-- Indicador de estado de carga en vivo -->
+    <div id="loading-banner" class="hidden rounded-2xl bg-indigo-50 border border-indigo-200 px-4 py-3 flex items-center justify-center gap-2.5 text-sm font-semibold text-indigo-800">
+      <svg class="w-4 h-4 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <span>Cargando stock en vivo...</span>
+    </div>
 
-        <!-- Precios del álbum activo -->
-        <div class="flex items-center gap-2 flex-wrap">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
-            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-slate-400"></span>
-            <span>Normal:</span>
-            <span id="price-normal-label" class="font-bold text-slate-900">S/ 1.00</span>
-          </div>
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
-            <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-400" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-            <span>Especial:</span>
-            <span id="price-special-label" class="font-bold text-amber-900">S/ 3.00</span>
-          </div>
+    <!-- Banner amigable de error si falla el enlace CSV -->
+    <div id="error-banner" class="hidden rounded-2xl bg-rose-50 border border-rose-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="flex items-start gap-2.5 text-rose-800">
+        <svg class="w-5 h-5 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div class="text-xs sm:text-sm">
+          <p class="font-bold">No se pudo leer tu Hoja de Cálculo de Google</p>
+          <p id="error-detail" class="text-rose-700 mt-0.5">Verifica que el enlace esté publicado como CSV y con acceso público.</p>
         </div>
       </div>
+      <button
+        id="retry-load-btn"
+        type="button"
+        class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shrink-0 transition-colors"
+      >
+        Reintentar
+      </button>
+    </div>
 
-      <!-- Barra de búsqueda y botón "Pegar lista de faltantes" -->
-      <div class="mt-4 grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-        <!-- Buscador instantáneo -->
-        <div class="relative sm:col-span-7">
+    <!-- Panel de Buscador, Pegado Rápido de Lista y Filtros -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-3.5 sm:p-4 shadow-xs space-y-3">
+      <!-- Input unificado: buscar número o pegar lista de faltantes -->
+      <div class="flex flex-col sm:flex-row gap-2">
+        <div class="relative flex-1">
           <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
             </svg>
           </span>
           <input
-            id="search-input"
+            id="search-paste-input"
             type="text"
-            inputmode="numeric"
-            placeholder="Buscar número (ej: 15, 108)..."
-            class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition-all"
+            placeholder="Buscar número (ej: 05) o pegar lista (ej: 01, 15, 42, 108, 180)"
+            class="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition-all"
           />
           <button
-            id="clear-search-btn"
+            id="clear-input-btn"
             type="button"
-            aria-label="Limpiar búsqueda"
+            aria-label="Limpiar campo"
             class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -125,110 +162,63 @@
           </button>
         </div>
 
-        <!-- Botón para abrir/cerrar panel de pegar lista -->
         <button
-          id="toggle-paste-btn"
+          id="mark-list-btn"
           type="button"
-          class="sm:col-span-5 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 border border-indigo-200 font-semibold text-sm transition-colors"
+          class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-sm shadow-xs transition-colors shrink-0"
         >
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
           </svg>
-          <span>Pegar mi lista de faltantes</span>
-          <svg id="paste-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          <span>Marcar lista</span>
         </button>
       </div>
 
-      <!-- Panel colapsable: Pegar lista de faltantes -->
-      <div id="paste-panel" class="hidden mt-3 p-3.5 rounded-xl bg-indigo-50/60 border border-indigo-100 space-y-3">
-        <div class="flex items-start justify-between gap-2">
-          <p class="text-xs sm:text-sm text-slate-700">
-            Pega tus números faltantes separados por <strong>comas, espacios o saltos de línea</strong> y marcaremos automáticamente los que tenemos en stock en este álbum.
-          </p>
-        </div>
-        <textarea
-          id="paste-textarea"
-          rows="3"
-          placeholder="Ejemplo: 1, 5, 12, 45, 99"
-          class="w-full p-3 rounded-xl border border-indigo-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm resize-y"
-        ></textarea>
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <button
-            id="paste-clear-btn"
-            type="button"
-            class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-white/80 transition-colors"
-          >
-            Limpiar texto
-          </button>
-          <button
-            id="paste-apply-btn"
-            type="button"
-            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold shadow-sm transition-colors"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Marcar disponibles</span>
-          </button>
-        </div>
-        <!-- Resultado del procesamiento de la lista pegada -->
-        <div id="paste-result" class="hidden rounded-xl bg-white border border-slate-200 p-3 text-xs space-y-1.5"></div>
+      <!-- Resultado del marcado rápido de lista -->
+      <div id="paste-feedback" class="hidden rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs space-y-1 relative">
+        <button
+          id="close-feedback-btn"
+          type="button"
+          aria-label="Cerrar aviso"
+          class="absolute top-2 right-2 p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/70"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div id="paste-feedback-body" class="pr-6 space-y-1"></div>
       </div>
 
-      <!-- Filtros rápidos (Píldoras) -->
-      <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div id="filter-pills" class="flex flex-wrap gap-2">
-          <!-- Botones generados dinámicamente con contadores -->
-        </div>
-
-        <!-- Leyenda compacta de los 4 estados -->
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-medium text-slate-600">
-          <span class="inline-flex items-center gap-1">
-            <span class="w-3 h-3 rounded bg-white border border-slate-300 inline-block"></span>
-            Disponible
-          </span>
-          <span class="inline-flex items-center gap-1">
-            <span class="w-3 h-3 rounded bg-amber-50 border-2 border-amber-400 inline-block"></span>
-            Especial
-          </span>
-          <span class="inline-flex items-center gap-1">
-            <span class="w-3 h-3 rounded bg-emerald-500 border border-emerald-600 inline-block"></span>
-            Elegida
-          </span>
-          <span class="inline-flex items-center gap-1">
-            <span class="w-3 h-3 rounded bg-slate-200 border border-slate-200 inline-block opacity-70"></span>
-            Agotada
-          </span>
-        </div>
+      <!-- Filtros rápidos en píldoras -->
+      <div id="filter-pills" class="flex flex-wrap gap-2 pt-1">
+        <!-- Se generan dinámicamente -->
       </div>
     </section>
 
-    <!-- Cuadrícula de Figuritas -->
-    <section aria-label="Listado de figuritas">
+    <!-- Cuadrícula de Figuritas (01 al 180) -->
+    <section aria-label="Cuadrícula de figuritas del 01 al 180">
       <div
         id="stickers-grid"
-        class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2 sm:gap-2.5"
+        class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-9 lg:grid-cols-10 xl:grid-cols-12 gap-2 sm:gap-2.5"
       >
-        <!-- Botones de figuritas generados dinámicamente -->
+        <!-- Botones del 01 al 180 generados dinámicamente -->
       </div>
 
       <!-- Estado vacío cuando un filtro o búsqueda no devuelve resultados -->
       <div id="empty-state" class="hidden bg-white rounded-2xl border border-slate-200 p-8 text-center">
-        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div class="w-11 h-11 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2.5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
           </svg>
         </div>
-        <h3 class="text-sm font-bold text-slate-800">No encontramos figuritas con ese filtro</h3>
-        <p class="text-xs text-slate-500 mt-1">Prueba cambiando el filtro o limpiando el buscador.</p>
+        <h2 class="text-sm font-bold text-slate-800">No hay figuritas que coincidan</h2>
+        <p class="text-xs text-slate-500 mt-1">Prueba cambiando el filtro o limpiando tu búsqueda.</p>
         <button
           id="reset-filters-btn"
           type="button"
-          class="mt-3 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors"
+          class="mt-3 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition-colors"
         >
-          Ver todas las figuritas
+          Ver todas (180)
         </button>
       </div>
     </section>
@@ -236,62 +226,54 @@
 
   <!-- ==================== BARRA INFERIOR FIJA (STICKY BAR) ==================== -->
   <footer class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)]">
-    <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
       <div class="flex items-center justify-between gap-2 sm:gap-4">
-        <!-- Resumen izquierdo: cantidad y total -->
+        <!-- Resumen de cantidad y total -->
         <button
-          id="sticky-detail-trigger"
+          id="open-detail-btn"
           type="button"
           class="flex items-center gap-2.5 sm:gap-3 text-left rounded-xl p-1.5 -ml-1.5 hover:bg-slate-100 transition-colors min-w-0"
-          title="Ver detalle del pedido"
+          title="Ver detalle de tu selección"
         >
           <div class="relative w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <span id="sticky-count-badge" class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center">
+            <span id="sticky-count" class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center">
               0
             </span>
           </div>
           <div class="min-w-0">
-            <div class="flex items-center gap-1">
-              <span class="text-[11px] font-medium text-slate-500">Total a pagar</span>
-              <span class="text-[11px] font-semibold text-indigo-600 underline">Ver detalle</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-medium text-slate-500">Total</span>
+              <span class="text-[11px] font-semibold text-indigo-600 underline">Ver lista</span>
             </div>
-            <p id="sticky-total-price" class="text-base sm:text-lg font-extrabold text-slate-900 leading-tight truncate">
+            <p id="sticky-total" class="text-base sm:text-lg font-extrabold text-slate-900 leading-tight truncate">
               S/ 0.00
             </p>
           </div>
         </button>
 
-        <!-- Botones de acción derecha -->
+        <!-- Botones Limpiar y Enviar pedido por WhatsApp -->
         <div class="flex items-center gap-2 shrink-0">
-          <!-- Botón limpiar selección -->
           <button
-            id="clear-all-btn"
+            id="clear-selection-btn"
             type="button"
             disabled
-            title="Limpiar selección"
-            class="p-2.5 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-            aria-label="Limpiar selección"
+            class="px-3 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 disabled:opacity-40 disabled:pointer-events-none text-xs sm:text-sm font-semibold transition-colors"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            Limpiar
           </button>
 
-          <!-- Botón principal WhatsApp -->
           <button
-            id="whatsapp-send-btn"
+            id="whatsapp-btn"
             type="button"
             class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm shadow-sm shadow-emerald-600/20 transition-all"
           >
-            <!-- Icono WhatsApp -->
             <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.766.469 3.484 1.344 5l-1.406 5.156 5.281-1.391c1.469.797 3.109 1.219 4.75 1.219 5.516 0 9.969-4.453 9.969-9.969S17.547 2 12.031 2zm5.828 14.125c-.25.703-1.438 1.344-2 1.422-.516.078-1.172.109-1.891-.125-.438-.141-1-.328-1.719-.641-3.016-1.313-4.984-4.359-5.141-4.563-.141-.203-1.219-1.625-1.219-3.109s.766-2.203 1.047-2.5c.281-.297.609-.375.813-.375.203 0 .406.016.578.016.188 0 .438-.078.688.516.25.609.859 2.094.938 2.25.078.156.125.344.031.547-.094.203-.156.328-.313.5-.156.172-.313.391-.453.516-.156.141-.313.297-.141.594.172.297.766 1.266 1.656 2.063 1.141 1.016 2.109 1.328 2.406 1.484.297.156.469.125.641-.078.172-.203.75-.875.953-1.172.203-.297.406-.25.672-.156.266.094 1.719.813 2.016.953.297.156.5.219.578.344.078.125.078.734-.172 1.438z" />
             </svg>
-            <span class="hidden sm:inline">Enviar pedido por WhatsApp</span>
-            <span class="sm:hidden">Pedir por WhatsApp</span>
+            <span>Enviar pedido</span>
           </button>
         </div>
       </div>
@@ -299,16 +281,15 @@
   </footer>
 
   <!-- ==================== MODAL DE DETALLE DEL PEDIDO ==================== -->
-  <div id="summary-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-xs">
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-xs">
     <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[85vh] flex flex-col overflow-hidden">
-      <!-- Cabecera del modal -->
       <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
         <div>
           <h3 class="text-base font-bold text-slate-900">Detalle de tu pedido</h3>
-          <p id="modal-subtitle" class="text-xs text-slate-500">0 figuritas seleccionadas</p>
+          <p id="modal-count-label" class="text-xs text-slate-500">0 figuritas seleccionadas</p>
         </div>
         <button
-          id="close-modal-btn"
+          id="close-detail-btn"
           type="button"
           class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           aria-label="Cerrar detalle"
@@ -319,16 +300,12 @@
         </button>
       </div>
 
-      <!-- Cuerpo del modal -->
-      <div id="modal-body" class="p-5 overflow-y-auto space-y-4 flex-1">
-        <!-- Se llena dinámicamente -->
-      </div>
+      <div id="modal-body" class="p-5 overflow-y-auto space-y-4 flex-1"></div>
 
-      <!-- Pie del modal -->
       <div class="px-5 py-4 bg-slate-50 border-t border-slate-200 space-y-3">
         <div class="flex items-center justify-between text-base font-extrabold text-slate-900">
-          <span>Total estimado</span>
-          <span id="modal-total-price" class="text-emerald-700">S/ 0.00</span>
+          <span>Total a pagar</span>
+          <span id="modal-total" class="text-emerald-700">S/ 0.00</span>
         </div>
         <div class="grid grid-cols-2 gap-2.5">
           <button
@@ -339,14 +316,14 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
-            <span>Copiar lista</span>
+            <span>Copiar texto</span>
           </button>
           <button
             id="modal-whatsapp-btn"
             type="button"
             class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold transition-colors"
           >
-            <span>Enviar WhatsApp</span>
+            <span>Enviar pedido</span>
           </button>
         </div>
       </div>
@@ -363,8 +340,8 @@
           </svg>
         </div>
         <div>
-          <h3 class="text-base font-bold text-slate-900">¿Limpiar toda tu selección?</h3>
-          <p class="text-xs text-slate-500 mt-1">Se desmarcarán todas las figuritas elegidas en todos los álbumes.</p>
+          <h3 class="text-base font-bold text-slate-900">¿Limpiar selección?</h3>
+          <p class="text-xs text-slate-500 mt-1">Se desmarcarán todas las figuritas que elegiste.</p>
         </div>
       </div>
       <div class="flex justify-end gap-2">
@@ -388,113 +365,75 @@
 
   <!-- ==================== NOTIFICACIÓN FLOTANTE (TOAST) ==================== -->
   <div id="toast" class="pointer-events-none fixed top-20 left-1/2 -translate-x-1/2 z-50 opacity-0 transition-opacity duration-200">
-    <div id="toast-content" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold shadow-lg flex items-center gap-2 whitespace-nowrap">
-      <!-- Mensaje dinámico -->
-    </div>
+    <div id="toast-content" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold shadow-lg whitespace-nowrap"></div>
   </div>
 
   <!-- ==================== LÓGICA DE LA APLICACIÓN ==================== -->
   <script>
     /* =========================================================================
-       1. CONFIGURACIÓN PRINCIPAL (EDITA AQUÍ TUS DATOS, PRECIOS Y STOCK)
-       =========================================================================
-       Instrucciones rápidas:
-       - whatsapp: Tu número con código de país, sin "+" ni espacios (Ej. Perú: "51999999999").
-       - moneda: Símbolo de tu moneda (Ej. "S/").
-       - albumes: Puedes editar estos 2 álbumes o agregar más copiando el mismo formato.
-         * totalFiguras: Número más alto del álbum (ej. 120 genera del 1 al 120).
-         * disponibles: Lista de números que SÍ tienes en stock.
-         * especiales: Lista de números que son dorados/holográficos (tienen precio especial).
-    ========================================================================= */
+       1. CONFIGURACIÓN PRINCIPAL (EDITA AQUÍ TUS DATOS Y ENLACE DE GOOGLE SHEETS)
+       ========================================================================= */
     const CONFIG = {
-      whatsapp: "51999330699",
+      nombreAlbum: "Álbum Coleccionable (01 al 180)",
+      subtitulo: "Marca las figuritas que te faltan y envía tu pedido",
+      // Tu WhatsApp en formato código de país + número, sin "+" ni espacios (Ej. Perú: "51999999999")
+      whatsapp: "51999999999",
       moneda: "S/",
-      nombreTienda: "Catálogo de Figuritas",
-      albumes: [
-        {
-          id: "mundial-2026",
-          nombre: "Mundial 2026",
-          subtitulo: "Colección Oficial • Sueltas y Doradas",
-          totalFiguras: 120,
-          precioNormal: 1.00,
-          precioEspecial: 3.00,
-          // Números que SÍ tienes en stock (los que no estén aquí aparecerán como Agotados)
-          disponibles: [
-            1, 2, 3, 5, 7, 8, 10, 11, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25,
-            27, 29, 30, 31, 33, 35, 36, 38, 40, 41, 42, 44, 45, 47, 48, 50,
-            52, 53, 55, 56, 58, 60, 61, 63, 64, 66, 68, 70, 71, 72, 74, 75,
-            77, 79, 80, 82, 84, 85, 87, 88, 90, 91, 93, 95, 96, 98, 99, 100,
-            102, 104, 105, 107, 108, 110, 112, 114, 115, 118, 120
-          ],
-          // Números que son especiales / doradas / holográficas
-          especiales: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
-        },
-        {
-          id: "copa-america",
-          nombre: "Copa América",
-          subtitulo: "Edición Coleccionista • Stock actualizado",
-          totalFiguras: 80,
-          precioNormal: 1.00,
-          precioEspecial: 3.00,
-          disponibles: [
-            1, 2, 4, 6, 7, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 28,
-            30, 31, 33, 34, 36, 38, 40, 41, 43, 45, 46, 48, 50, 52, 54, 55,
-            57, 59, 60, 62, 63, 65, 67, 68, 70, 72, 74, 76, 78, 80
-          ],
-          especiales: [1, 10, 20, 30, 40, 50, 60, 70, 80]
-        }
-      ]
+      // Pega aquí el enlace CSV de Google Sheets (Archivo → Compartir → Publicar en la web → CSV)
+      // Si lo dejas vacío "", se activa automáticamente el Modo Demostración del 01 al 180.
+      sheetCsvUrl: "",
+      precioNormalDefault: 1.00,
+      precioEspecialDefault: 3.00
     };
 
     /* =========================================================================
-       2. ESTADO DE LA APLICACIÓN (NO NECESITAS EDITAR DE AQUÍ EN ADELANTE)
+       2. CONSTANTES Y ESTADO DE LA APLICACIÓN
        ========================================================================= */
-    const STORAGE_KEY = "catalogo_figuritas_seleccion_v1";
+    const TOTAL_STICKERS = 180;
+    const STORAGE_KEY = "catalogo_album_180_seleccion_v1";
 
     const state = {
-      activeAlbumId: CONFIG.albumes[0]?.id || "",
+      // Arreglo de 180 objetos: { num, label, isSpecial, price, stock, available }
+      stickers: [],
+      selected: new Set(),
       filter: "all", // "all" | "available" | "special" | "selected"
-      searchQuery: "",
-      // Mapa de selección por álbum: { [albumId]: Set<number> }
-      selectedByAlbum: {},
-      // Sets optimizados para consultas instantáneas
-      albumMaps: {}
+      searchRaw: "",
+      isLoading: false
     };
 
-    // Referencias a elementos del DOM
     const dom = {
-      storeTitle: document.getElementById("store-title"),
-      albumTabs: document.getElementById("album-tabs"),
-      activeAlbumName: document.getElementById("active-album-name"),
-      activeAlbumSubtitle: document.getElementById("active-album-subtitle"),
-      activeAlbumStockPill: document.getElementById("active-album-stock-pill"),
-      priceNormalLabel: document.getElementById("price-normal-label"),
-      priceSpecialLabel: document.getElementById("price-special-label"),
-      searchInput: document.getElementById("search-input"),
-      clearSearchBtn: document.getElementById("clear-search-btn"),
-      togglePasteBtn: document.getElementById("toggle-paste-btn"),
-      pasteChevron: document.getElementById("paste-chevron"),
-      pastePanel: document.getElementById("paste-panel"),
-      pasteTextarea: document.getElementById("paste-textarea"),
-      pasteClearBtn: document.getElementById("paste-clear-btn"),
-      pasteApplyBtn: document.getElementById("paste-apply-btn"),
-      pasteResult: document.getElementById("paste-result"),
+      demoBanner: document.getElementById("demo-banner"),
+      albumTitle: document.getElementById("album-title"),
+      albumSubtitle: document.getElementById("album-subtitle"),
+      reloadStockBtn: document.getElementById("reload-stock-btn"),
+      reloadIcon: document.getElementById("reload-icon"),
+      stockAvailablePill: document.getElementById("stock-available-pill"),
+      stockOutPill: document.getElementById("stock-out-pill"),
+      lastUpdatedLabel: document.getElementById("last-updated-label"),
+      loadingBanner: document.getElementById("loading-banner"),
+      errorBanner: document.getElementById("error-banner"),
+      errorDetail: document.getElementById("error-detail"),
+      retryLoadBtn: document.getElementById("retry-load-btn"),
+      searchPasteInput: document.getElementById("search-paste-input"),
+      clearInputBtn: document.getElementById("clear-input-btn"),
+      markListBtn: document.getElementById("mark-list-btn"),
+      pasteFeedback: document.getElementById("paste-feedback"),
+      pasteFeedbackBody: document.getElementById("paste-feedback-body"),
+      closeFeedbackBtn: document.getElementById("close-feedback-btn"),
       filterPills: document.getElementById("filter-pills"),
       stickersGrid: document.getElementById("stickers-grid"),
       emptyState: document.getElementById("empty-state"),
       resetFiltersBtn: document.getElementById("reset-filters-btn"),
-      headerSummaryBtn: document.getElementById("header-summary-btn"),
-      headerBadge: document.getElementById("header-badge"),
-      stickyDetailTrigger: document.getElementById("sticky-detail-trigger"),
-      stickyCountBadge: document.getElementById("sticky-count-badge"),
-      stickyTotalPrice: document.getElementById("sticky-total-price"),
-      clearAllBtn: document.getElementById("clear-all-btn"),
-      whatsappSendBtn: document.getElementById("whatsapp-send-btn"),
-      summaryModal: document.getElementById("summary-modal"),
-      closeModalBtn: document.getElementById("close-modal-btn"),
-      modalSubtitle: document.getElementById("modal-subtitle"),
+      openDetailBtn: document.getElementById("open-detail-btn"),
+      stickyCount: document.getElementById("sticky-count"),
+      stickyTotal: document.getElementById("sticky-total"),
+      clearSelectionBtn: document.getElementById("clear-selection-btn"),
+      whatsappBtn: document.getElementById("whatsapp-btn"),
+      detailModal: document.getElementById("detail-modal"),
+      closeDetailBtn: document.getElementById("close-detail-btn"),
+      modalCountLabel: document.getElementById("modal-count-label"),
       modalBody: document.getElementById("modal-body"),
-      modalTotalPrice: document.getElementById("modal-total-price"),
+      modalTotal: document.getElementById("modal-total"),
       copyOrderBtn: document.getElementById("copy-order-btn"),
       modalWhatsappBtn: document.getElementById("modal-whatsapp-btn"),
       confirmClearModal: document.getElementById("confirm-clear-modal"),
@@ -507,10 +446,29 @@
     let toastTimer = null;
 
     /* =========================================================================
-       3. UTILIDADES Y PERSISTENCIA
+       3. FUNCIONES AUXILIARES (FORMATO, NORMALIZACIÓN Y PERSISTENCIA)
        ========================================================================= */
+
+    /**
+     * Formatea el número de figurita: 01 al 99 (2 dígitos) y 100 al 180 (3 dígitos).
+     */
+    function formatNum(num) {
+      return num < 100 ? String(num).padStart(2, "0") : String(num);
+    }
+
     function formatMoney(amount) {
       return `${CONFIG.moneda} ${Number(amount).toFixed(2)}`;
+    }
+
+    /**
+     * Quita tildes, convierte a minúsculas y recorta espacios.
+     */
+    function normalizeText(value) {
+      return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
     }
 
     function showToast(message) {
@@ -524,218 +482,440 @@
       }, 2400);
     }
 
-    function initAlbumData() {
-      CONFIG.albumes.forEach((album) => {
-        state.albumMaps[album.id] = {
-          available: new Set(album.disponibles),
-          special: new Set(album.especiales)
-        };
-        state.selectedByAlbum[album.id] = new Set();
-      });
-
-      // Restaurar selección previa del cliente si existe en el navegador
+    function saveSelection() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          CONFIG.albumes.forEach((album) => {
-            const savedNums = parsed[album.id];
-            if (Array.isArray(savedNums)) {
-              const validSet = state.albumMaps[album.id].available;
-              savedNums.forEach((num) => {
-                // Solo restaurar si sigue disponible en stock
-                if (validSet.has(num)) {
-                  state.selectedByAlbum[album.id].add(num);
-                }
-              });
-            }
-          });
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(state.selected)));
       } catch (err) {
-        // Ignorar si localStorage no está disponible (modo incógnito estricto, etc.)
+        // Ignorar si el navegador bloquea localStorage
       }
     }
 
-    function saveSelection() {
+    function restoreSelection() {
       try {
-        const payload = {};
-        CONFIG.albumes.forEach((album) => {
-          payload[album.id] = Array.from(state.selectedByAlbum[album.id]);
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return;
+        parsed.forEach((n) => {
+          const item = state.stickers[n - 1];
+          if (item && item.available) {
+            state.selected.add(n);
+          }
         });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       } catch (err) {
         // Ignorar errores de almacenamiento
       }
     }
 
-    function getActiveAlbum() {
-      return CONFIG.albumes.find((a) => a.id === state.activeAlbumId) || CONFIG.albumes[0];
-    }
-
     /**
-     * Calcula el resumen completo de todas las figuritas seleccionadas en todos los álbumes.
+     * Limpia de la selección cualquier figurita que haya pasado a agotada tras recargar el stock.
      */
-    function calculateOrderSummary() {
-      let totalCount = 0;
-      let totalPrice = 0;
-      const byAlbum = [];
-
-      CONFIG.albumes.forEach((album) => {
-        const selectedSet = state.selectedByAlbum[album.id];
-        if (!selectedSet || selectedSet.size === 0) return;
-
-        const specialSet = state.albumMaps[album.id].special;
-        const normales = [];
-        const especiales = [];
-
-        Array.from(selectedSet)
-          .sort((a, b) => a - b)
-          .forEach((num) => {
-            if (specialSet.has(num)) {
-              especiales.push(num);
-            } else {
-              normales.push(num);
-            }
-          });
-
-        const subtotalNormales = normales.length * album.precioNormal;
-        const subtotalEspeciales = especiales.length * album.precioEspecial;
-        const subtotalAlbum = subtotalNormales + subtotalEspeciales;
-        const countAlbum = normales.length + especiales.length;
-
-        totalCount += countAlbum;
-        totalPrice += subtotalAlbum;
-
-        byAlbum.push({
-          album,
-          normales,
-          especiales,
-          subtotalNormales,
-          subtotalEspeciales,
-          subtotalAlbum,
-          countAlbum
-        });
+    function pruneUnavailableSelection() {
+      let removed = 0;
+      state.selected.forEach((num) => {
+        const item = state.stickers[num - 1];
+        if (!item || !item.available) {
+          state.selected.delete(num);
+          removed++;
+        }
       });
+      if (removed > 0) {
+        saveSelection();
+        showToast(`Se quitaron ${removed} figurita(s) que ya se agotaron`);
+      }
+    }
 
-      return { totalCount, totalPrice, byAlbum };
+    /* =========================================================================
+       4. PARSER CSV ROBUSTO Y CARGA EN VIVO DESDE GOOGLE SHEETS
+       ========================================================================= */
+
+    /**
+     * Detecta si el CSV usa coma (,) o punto y coma (;) como separador principal.
+     */
+    function detectDelimiter(csvText) {
+      const firstLine = csvText.split(/\r?\n/).find((l) => l.trim().length > 0) || "";
+      let inQuotes = false;
+      let commas = 0;
+      let semicolons = 0;
+      for (let i = 0; i < firstLine.length; i++) {
+        const ch = firstLine[i];
+        if (ch === '"') inQuotes = !inQuotes;
+        else if (!inQuotes) {
+          if (ch === ",") commas++;
+          else if (ch === ";") semicolons++;
+        }
+      }
+      return semicolons > commas ? ";" : ",";
     }
 
     /**
-     * Construye el texto formateado y ordenado listo para enviar por WhatsApp o copiar.
+     * Parsea un texto CSV respetando comillas, comillas escapadas ("") y saltos de línea.
      */
+    function parseCsv(csvText) {
+      // Quitar BOM UTF-8 si existe
+      const cleanText = csvText.replace(/^\uFEFF/, "");
+      const delimiter = detectDelimiter(cleanText);
+      const rows = [];
+      let currentRow = [];
+      let currentField = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < cleanText.length; i++) {
+        const ch = cleanText[i];
+        const next = cleanText[i + 1];
+
+        if (inQuotes) {
+          if (ch === '"' && next === '"') {
+            currentField += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            currentField += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === delimiter) {
+            currentRow.push(currentField.trim());
+            currentField = "";
+          } else if (ch === "\r" && next === "\n") {
+            currentRow.push(currentField.trim());
+            rows.push(currentRow);
+            currentRow = [];
+            currentField = "";
+            i++;
+          } else if (ch === "\n" || ch === "\r") {
+            currentRow.push(currentField.trim());
+            rows.push(currentRow);
+            currentRow = [];
+            currentField = "";
+          } else {
+            currentField += ch;
+          }
+        }
+      }
+
+      if (currentField.length > 0 || currentRow.length > 0) {
+        currentRow.push(currentField.trim());
+        rows.push(currentRow);
+      }
+
+      return rows.filter((row) => row.some((cell) => cell !== ""));
+    }
+
+    /**
+     * Convierte un texto de precio (ej: "1,50", "S/ 3.00", "2.5") en número decimal.
+     */
+    function parsePrice(rawValue, isSpecial) {
+      const cleaned = String(rawValue || "")
+        .replace(/[^\d.,-]/g, "")
+        .replace(",", ".");
+      const parsed = parseFloat(cleaned);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        return parsed;
+      }
+      return isSpecial ? CONFIG.precioEspecialDefault : CONFIG.precioNormalDefault;
+    }
+
+    /**
+     * Interpreta el stock: acepta números enteros (>0 disponible, 0 agotada) o "SI"/"NO".
+     */
+    function parseStock(rawValue) {
+      const norm = normalizeText(rawValue);
+      if (!norm) return 0;
+      if (["si", "yes", "true", "disponible", "ok", "x", "hay"].includes(norm)) return 1;
+      if (["no", "false", "agotada", "agotado", "sin stock", "-"].includes(norm)) return 0;
+      const numeric = parseInt(norm.replace(/[^\d-]/g, ""), 10);
+      return Number.isFinite(numeric) && numeric > 0 ? numeric : 0;
+    }
+
+    /**
+     * Genera la base vacía de las 180 figuritas (01 al 180) antes de aplicar el CSV.
+     */
+    function createEmptyInventory() {
+      const list = [];
+      for (let num = 1; num <= TOTAL_STICKERS; num++) {
+        list.push({
+          num,
+          label: formatNum(num),
+          isSpecial: false,
+          price: CONFIG.precioNormalDefault,
+          stock: 0,
+          available: false
+        });
+      }
+      return list;
+    }
+
+    /**
+     * Genera un inventario de demostración realista del 01 al 180 cuando no hay enlace CSV.
+     */
+    function createDemoInventory() {
+      const list = [];
+      for (let num = 1; num <= TOTAL_STICKERS; num++) {
+        const isSpecial = num === 1 || num % 12 === 0 || num === 180;
+        // Aproximadamente 72% disponibles y 28% agotadas de ejemplo
+        const isOut = num % 7 === 0 || num % 11 === 0;
+        const stock = isOut ? 0 : isSpecial ? 2 : 5;
+        list.push({
+          num,
+          label: formatNum(num),
+          isSpecial,
+          price: isSpecial ? CONFIG.precioEspecialDefault : CONFIG.precioNormalDefault,
+          stock,
+          available: stock > 0
+        });
+      }
+      return list;
+    }
+
+    /**
+     * Convierte las filas parseadas del CSV en el arreglo de 180 figuritas.
+     */
+    function buildInventoryFromCsv(rows) {
+      if (!rows || rows.length < 2) {
+        throw new Error("La hoja CSV está vacía o no tiene filas de datos.");
+      }
+
+      const headers = rows[0].map((h) => normalizeText(h));
+      const idxNumero = headers.findIndex((h) =>
+        ["numero", "num", "nro", "n", "figurita", "figura", "codigo", "id"].includes(h)
+      );
+      const idxTipo = headers.findIndex((h) =>
+        ["tipo", "categoria", "clase", "especial"].includes(h)
+      );
+      const idxPrecio = headers.findIndex((h) =>
+        ["precio", "valor", "costo", "price"].includes(h)
+      );
+      const idxStock = headers.findIndex((h) =>
+        ["stock", "cantidad", "cant", "disponible", "estado", "qty"].includes(h)
+      );
+
+      if (idxNumero === -1) {
+        throw new Error('No se encontró la columna "numero" en la primera fila de tu Google Sheet.');
+      }
+
+      const inventory = createEmptyInventory();
+      let validRowsCount = 0;
+
+      for (let r = 1; r < rows.length; r++) {
+        const row = rows[r];
+        const rawNum = row[idxNumero];
+        if (!rawNum) continue;
+
+        const matchNum = String(rawNum).match(/\d+/);
+        if (!matchNum) continue;
+
+        const num = parseInt(matchNum[0], 10);
+        if (num < 1 || num > TOTAL_STICKERS) continue;
+
+        const rawTipo = idxTipo !== -1 ? normalizeText(row[idxTipo]) : "";
+        const isSpecial =
+          rawTipo.includes("esp") ||
+          rawTipo.includes("dorad") ||
+          rawTipo.includes("holo") ||
+          rawTipo.includes("brill");
+
+        const price = parsePrice(idxPrecio !== -1 ? row[idxPrecio] : "", isSpecial);
+        // Si el usuario no incluyó columna "stock", asumimos disponible (1)
+        const stock = idxStock !== -1 ? parseStock(row[idxStock]) : 1;
+
+        inventory[num - 1] = {
+          num,
+          label: formatNum(num),
+          isSpecial,
+          price,
+          stock,
+          available: stock > 0
+        };
+        validRowsCount++;
+      }
+
+      if (validRowsCount === 0) {
+        throw new Error("No se encontraron números válidos del 01 al 180 en la columna numero.");
+      }
+
+      return inventory;
+    }
+
+    /**
+     * Carga el stock desde Google Sheets (con anti-caché) o inicia el Modo Demo.
+     */
+    async function loadStock(isManualReload = false) {
+      const url = String(CONFIG.sheetCsvUrl || "").trim();
+      dom.errorBanner.classList.add("hidden");
+
+      // Modo demostración si no se ha configurado enlace CSV
+      if (!url) {
+        dom.demoBanner.classList.remove("hidden");
+        state.stickers = createDemoInventory();
+        if (!isManualReload) restoreSelection();
+        pruneUnavailableSelection();
+        renderAll();
+        if (isManualReload) {
+          showToast("Modo demo activo (pega tu enlace CSV en CONFIG)");
+        }
+        return;
+      }
+
+      dom.demoBanner.classList.add("hidden");
+      state.isLoading = true;
+      dom.loadingBanner.classList.remove("hidden");
+      dom.reloadIcon.classList.add("animate-spin");
+      dom.reloadStockBtn.disabled = true;
+
+      try {
+        const sep = url.includes("?") ? "&" : "?";
+        const fetchUrl = `${url}${sep}t=${Date.now()}`;
+        const response = await fetch(fetchUrl, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error(`El servidor respondió con código ${response.status}.`);
+        }
+
+        const csvText = await response.text();
+        // Verificar que Google no haya devuelto una página HTML de login/error en lugar de CSV
+        if (csvText.trim().startsWith("<!DOCTYPE") || csvText.trim().startsWith("<html")) {
+          throw new Error("El enlace devolvió una página HTML en vez de CSV. Asegúrate de usar 'Publicar en la web → CSV'.");
+        }
+
+        const rows = parseCsv(csvText);
+        state.stickers = buildInventoryFromCsv(rows);
+
+        if (!isManualReload) restoreSelection();
+        pruneUnavailableSelection();
+
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        dom.lastUpdatedLabel.textContent = `Actualizado ${hh}:${mm}`;
+        dom.lastUpdatedLabel.classList.remove("hidden");
+
+        renderAll();
+        if (isManualReload) {
+          showToast("Stock actualizado en vivo");
+        }
+      } catch (err) {
+        dom.errorDetail.textContent =
+          err && err.message
+            ? err.message
+            : "No pudimos conectar con Google Sheets. Revisa tu conexión o el enlace CSV.";
+        dom.errorBanner.classList.remove("hidden");
+
+        // Si es la primera carga y falló, inicializar al menos una cuadrícula vacía para no romper la vista
+        if (state.stickers.length === 0) {
+          state.stickers = createEmptyInventory();
+          renderAll();
+        }
+      } finally {
+        state.isLoading = false;
+        dom.loadingBanner.classList.add("hidden");
+        dom.reloadIcon.classList.remove("animate-spin");
+        dom.reloadStockBtn.disabled = false;
+      }
+    }
+
+    /* =========================================================================
+       5. CÁLCULO DE RESUMEN Y MENSAJE DE WHATSAPP
+       ========================================================================= */
+    function getOrderSummary() {
+      const normales = [];
+      const especiales = [];
+      let totalPrice = 0;
+
+      Array.from(state.selected)
+        .sort((a, b) => a - b)
+        .forEach((num) => {
+          const item = state.stickers[num - 1];
+          if (!item || !item.available) return;
+          totalPrice += item.price;
+          if (item.isSpecial) {
+            especiales.push(item);
+          } else {
+            normales.push(item);
+          }
+        });
+
+      return {
+        normales,
+        especiales,
+        totalCount: normales.length + especiales.length,
+        totalPrice
+      };
+    }
+
     function buildWhatsAppMessage() {
-      const summary = calculateOrderSummary();
+      const summary = getOrderSummary();
       if (summary.totalCount === 0) return "";
 
       const lines = [];
-      lines.push(`¡Hola! 👋 Quisiera hacer un pedido de figuritas de *${CONFIG.nombreTienda}*:`);
+      lines.push(`¡Hola! 👋 Quisiera hacer un pedido de figuritas para el álbum *${CONFIG.nombreAlbum}*:`);
       lines.push("");
 
-      summary.byAlbum.forEach((item) => {
-        lines.push(`📘 *${item.album.nombre}* (${item.countAlbum} fig.):`);
-        if (item.normales.length > 0) {
-          lines.push(`• Normales (${item.normales.length} x ${formatMoney(item.album.precioNormal)}): ${item.normales.join(", ")}`);
-        }
-        if (item.especiales.length > 0) {
-          lines.push(`• Especiales ⭐ (${item.especiales.length} x ${formatMoney(item.album.precioEspecial)}): ${item.especiales.join(", ")}`);
-        }
-        lines.push(`  Subtotal: ${formatMoney(item.subtotalAlbum)}`);
-        lines.push("");
-      });
+      if (summary.normales.length > 0) {
+        const subNormal = summary.normales.reduce((acc, i) => acc + i.price, 0);
+        lines.push(`📄 *Normales (${summary.normales.length}):* ${summary.normales.map((i) => i.label).join(", ")}`);
+        lines.push(`   Subtotal normales: ${formatMoney(subNormal)}`);
+      }
 
+      if (summary.especiales.length > 0) {
+        const subEsp = summary.especiales.reduce((acc, i) => acc + i.price, 0);
+        lines.push(`⭐ *Especiales (${summary.especiales.length}):* ${summary.especiales.map((i) => i.label).join(", ")}`);
+        lines.push(`   Subtotal especiales: ${formatMoney(subEsp)}`);
+      }
+
+      lines.push("");
       lines.push(`📦 *Total de figuritas:* ${summary.totalCount}`);
       lines.push(`💰 *Total a pagar:* ${formatMoney(summary.totalPrice)}`);
       lines.push("");
-      lines.push("¿Me confirmas disponibilidad y forma de pago/entrega? ¡Gracias!");
+      lines.push("¿Me confirmas disponibilidad y forma de entrega? ¡Gracias!");
 
       return lines.join("\n");
     }
 
     /* =========================================================================
-       4. RENDERIZADO DE LA INTERFAZ
+       6. RENDERIZADO DE LA INTERFAZ
        ========================================================================= */
-    function renderAlbumTabs() {
-      dom.albumTabs.innerHTML = "";
-
-      CONFIG.albumes.forEach((album) => {
-        const isActive = album.id === state.activeAlbumId;
-        const selectedCount = state.selectedByAlbum[album.id].size;
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = isActive
-          ? "inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-sm shrink-0 transition-all"
-          : "inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold shrink-0 transition-all";
-
-        btn.innerHTML = `
-          <span>${album.nombre}</span>
-          ${
-            selectedCount > 0
-              ? `<span class="px-1.5 py-0.5 text-[11px] font-bold rounded-full ${
-                  isActive ? "bg-emerald-400 text-slate-900" : "bg-emerald-600 text-white"
-                }">${selectedCount}</span>`
-              : ""
-          }
-        `;
-
-        btn.addEventListener("click", () => {
-          if (state.activeAlbumId === album.id) return;
-          state.activeAlbumId = album.id;
-          state.searchQuery = "";
-          dom.searchInput.value = "";
-          dom.clearSearchBtn.classList.add("hidden");
-          dom.pasteResult.classList.add("hidden");
-          renderAll();
-        });
-
-        dom.albumTabs.appendChild(btn);
+    function renderHeaderStats() {
+      let availableCount = 0;
+      let outCount = 0;
+      state.stickers.forEach((item) => {
+        if (item.available) availableCount++;
+        else outCount++;
       });
-    }
 
-    function renderAlbumHeader() {
-      const album = getActiveAlbum();
-      const maps = state.albumMaps[album.id];
-
-      dom.activeAlbumName.textContent = album.nombre;
-      dom.activeAlbumSubtitle.textContent = album.subtitulo;
-      dom.activeAlbumStockPill.textContent = `${maps.available.size} de ${album.totalFiguras} disponibles`;
-      dom.priceNormalLabel.textContent = formatMoney(album.precioNormal);
-      dom.priceSpecialLabel.textContent = formatMoney(album.precioEspecial);
+      dom.stockAvailablePill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${availableCount} disponibles`;
+      dom.stockOutPill.textContent = `${outCount} agotadas`;
     }
 
     function renderFilterPills() {
-      const album = getActiveAlbum();
-      const maps = state.albumMaps[album.id];
-      const selectedSet = state.selectedByAlbum[album.id];
-
-      let specialAvailableCount = 0;
-      maps.special.forEach((n) => {
-        if (n >= 1 && n <= album.totalFiguras) specialAvailableCount++;
-      });
+      const availableCount = state.stickers.filter((s) => s.available).length;
+      const specialCount = state.stickers.filter((s) => s.isSpecial).length;
+      const selectedCount = state.selected.size;
 
       const filters = [
-        { id: "all", label: "Todas", count: album.totalFiguras },
-        { id: "available", label: "Disponibles", count: maps.available.size },
-        { id: "special", label: "Especiales ⭐", count: specialAvailableCount },
-        { id: "selected", label: "Mis elegidas", count: selectedSet.size }
+        { id: "all", label: `Todas (${TOTAL_STICKERS})` },
+        { id: "available", label: "Disponibles", count: availableCount },
+        { id: "special", label: "Especiales ⭐", count: specialCount },
+        { id: "selected", label: "Seleccionadas", count: selectedCount }
       ];
 
       dom.filterPills.innerHTML = "";
-
       filters.forEach((f) => {
-        const active = state.filter === f.id;
+        const isActive = state.filter === f.id;
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.className = active
+        btn.className = isActive
           ? "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold transition-colors"
           : "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors";
 
-        btn.innerHTML = `
-          <span>${f.label}</span>
-          <span class="px-1.5 py-0.2 rounded-full text-[10px] ${
-            active ? "bg-white/20 text-white" : "bg-white text-slate-600"
-          }">${f.count}</span>
-        `;
+        btn.innerHTML =
+          f.count !== undefined
+            ? `<span>${f.label}</span><span class="px-1.5 rounded-full text-[10px] ${
+                isActive ? "bg-white/20 text-white" : "bg-white text-slate-600"
+              }">${f.count}</span>`
+            : `<span>${f.label}</span>`;
 
         btn.addEventListener("click", () => {
           state.filter = f.id;
@@ -747,56 +927,72 @@
       });
     }
 
-    function renderGrid() {
-      const album = getActiveAlbum();
-      const maps = state.albumMaps[album.id];
-      const selectedSet = state.selectedByAlbum[album.id];
-      const query = state.searchQuery.trim();
+    /**
+     * Evalúa si una figurita coincide con lo escrito en el buscador (acepta 1 número o varios).
+     */
+    function matchesSearch(item, rawQuery) {
+      const query = rawQuery.trim();
+      if (!query) return true;
 
+      const tokens = query.match(/\d+/g);
+      if (!tokens || tokens.length === 0) return true;
+
+      // Si el usuario escribió un solo número (ej: "5" o "05"), permitir búsqueda parcial cómoda
+      if (tokens.length === 1) {
+        const token = tokens[0];
+        const parsed = parseInt(token, 10);
+        return (
+          item.label.includes(token) ||
+          String(item.num).includes(token) ||
+          item.num === parsed
+        );
+      }
+
+      // Si pegó una lista de varios números, mostrar todos los números exactos de esa lista
+      const exactSet = new Set(tokens.map((t) => parseInt(t, 10)));
+      return exactSet.has(item.num);
+    }
+
+    function renderGrid() {
       dom.stickersGrid.innerHTML = "";
       const fragment = document.createDocumentFragment();
       let visibleCount = 0;
 
-      for (let num = 1; num <= album.totalFiguras; num++) {
-        const isAvailable = maps.available.has(num);
-        const isSpecial = maps.special.has(num);
-        const isSelected = selectedSet.has(num);
+      state.stickers.forEach((item) => {
+        const isSelected = state.selected.has(item.num);
 
-        // Aplicar filtro de pestaña
-        if (state.filter === "available" && !isAvailable) continue;
-        if (state.filter === "special" && !isSpecial) continue;
-        if (state.filter === "selected" && !isSelected) continue;
-
-        // Aplicar filtro de buscador
-        if (query && !String(num).includes(query)) continue;
+        if (state.filter === "available" && !item.available) return;
+        if (state.filter === "special" && !item.isSpecial) return;
+        if (state.filter === "selected" && !isSelected) return;
+        if (!matchesSearch(item, state.searchRaw)) return;
 
         visibleCount++;
 
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.dataset.num = num;
+        btn.dataset.num = item.num;
 
-        if (!isAvailable) {
+        if (!item.available) {
           // Estado: AGOTADA
           btn.disabled = true;
           btn.className =
-            "relative min-h-[54px] rounded-xl bg-slate-100 border border-slate-200/80 text-slate-400 flex flex-col items-center justify-center cursor-not-allowed select-none opacity-65";
-          btn.setAttribute("aria-label", `Figurita ${num}, agotada`);
+            "relative min-h-[56px] rounded-xl bg-slate-100 border border-slate-200/80 text-slate-400 flex flex-col items-center justify-center cursor-not-allowed select-none opacity-65";
+          btn.setAttribute("aria-label", `Figurita ${item.label}, agotada`);
           btn.innerHTML = `
             ${
-              isSpecial
-                ? `<span class="absolute top-1 right-1 text-[9px] text-slate-400" aria-hidden="true">★</span>`
+              item.isSpecial
+                ? `<span class="absolute top-1 right-1 text-[9px] text-slate-400 leading-none" aria-hidden="true">★</span>`
                 : ""
             }
-            <span class="text-sm sm:text-base font-bold line-through decoration-slate-300">${num}</span>
-            <span class="text-[9px] font-medium uppercase tracking-tight">Agotada</span>
+            <span class="text-base sm:text-lg font-bold leading-none line-through decoration-slate-300">${item.label}</span>
+            <span class="text-[9px] font-semibold uppercase tracking-tight mt-1">Agot.</span>
           `;
         } else if (isSelected) {
-          // Estado: SELECCIONADA (verde WhatsApp)
+          // Estado: SELECCIONADA
           btn.className =
-            "relative min-h-[54px] rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 border-2 border-emerald-600 text-white shadow-sm shadow-emerald-500/20 flex flex-col items-center justify-center transition-all select-none";
+            "relative min-h-[56px] rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 border-2 border-emerald-600 text-white shadow-sm shadow-emerald-500/20 flex flex-col items-center justify-center transition-all select-none";
           btn.setAttribute("aria-pressed", "true");
-          btn.setAttribute("aria-label", `Figurita ${num}, seleccionada`);
+          btn.setAttribute("aria-label", `Figurita ${item.label}, seleccionada`);
           btn.innerHTML = `
             <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-white text-emerald-600 flex items-center justify-center">
               <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24">
@@ -804,391 +1000,365 @@
               </svg>
             </span>
             ${
-              isSpecial
+              item.isSpecial
                 ? `<span class="absolute top-1 left-1.5 text-[10px] text-amber-200 leading-none" aria-hidden="true">★</span>`
                 : ""
             }
-            <span class="text-base sm:text-lg font-extrabold leading-none">${num}</span>
-            <span class="text-[9px] font-semibold text-emerald-50 mt-0.5">${formatMoney(
-              isSpecial ? album.precioEspecial : album.precioNormal
-            )}</span>
+            <span class="text-base sm:text-lg font-extrabold leading-none">${item.label}</span>
+            <span class="text-[9px] font-semibold text-emerald-50 mt-1">${formatMoney(item.price)}</span>
           `;
-        } else if (isSpecial) {
+        } else if (item.isSpecial) {
           // Estado: DISPONIBLE ESPECIAL / DORADA
           btn.className =
-            "relative min-h-[54px] rounded-xl bg-gradient-to-b from-amber-50 to-amber-100/70 hover:from-amber-100 hover:to-amber-100 active:scale-95 border-2 border-amber-400 text-amber-950 shadow-xs flex flex-col items-center justify-center transition-all select-none";
+            "relative min-h-[56px] rounded-xl bg-gradient-to-b from-amber-50 to-amber-100/70 hover:from-amber-100 hover:to-amber-100 active:scale-95 border-2 border-amber-400 text-amber-950 shadow-2xs flex flex-col items-center justify-center transition-all select-none";
           btn.setAttribute("aria-pressed", "false");
-          btn.setAttribute("aria-label", `Figurita especial ${num}, disponible`);
+          btn.setAttribute("aria-label", `Figurita especial ${item.label}, disponible`);
           btn.innerHTML = `
             <svg class="w-3 h-3 text-amber-500 fill-amber-400 absolute top-1 right-1" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            <span class="text-base sm:text-lg font-extrabold leading-none">${num}</span>
-            <span class="text-[9px] font-bold text-amber-700 mt-0.5">${formatMoney(album.precioEspecial)}</span>
+            <span class="text-base sm:text-lg font-extrabold leading-none">${item.label}</span>
+            <span class="text-[9px] font-bold text-amber-700 mt-1">${formatMoney(item.price)}</span>
           `;
         } else {
           // Estado: DISPONIBLE NORMAL
           btn.className =
-            "relative min-h-[54px] rounded-xl bg-white hover:border-indigo-400 hover:bg-indigo-50/40 active:scale-95 border border-slate-200 text-slate-800 shadow-2xs flex flex-col items-center justify-center transition-all select-none";
+            "relative min-h-[56px] rounded-xl bg-white hover:border-indigo-400 hover:bg-indigo-50/40 active:scale-95 border border-slate-200 text-slate-800 shadow-2xs flex flex-col items-center justify-center transition-all select-none";
           btn.setAttribute("aria-pressed", "false");
-          btn.setAttribute("aria-label", `Figurita ${num}, disponible`);
+          btn.setAttribute("aria-label", `Figurita ${item.label}, disponible`);
           btn.innerHTML = `
-            <span class="text-base sm:text-lg font-bold leading-none">${num}</span>
-            <span class="text-[9px] font-medium text-slate-400 mt-0.5">${formatMoney(album.precioNormal)}</span>
+            <span class="text-base sm:text-lg font-bold leading-none">${item.label}</span>
+            <span class="text-[9px] font-medium text-slate-400 mt-1">${formatMoney(item.price)}</span>
           `;
         }
 
-        if (isAvailable) {
-          btn.addEventListener("click", () => toggleSticker(num));
+        if (item.available) {
+          btn.addEventListener("click", () => toggleSticker(item.num));
         }
 
         fragment.appendChild(btn);
-      }
+      });
 
       dom.stickersGrid.appendChild(fragment);
       dom.emptyState.classList.toggle("hidden", visibleCount > 0);
     }
 
     function renderStickyBar() {
-      const summary = calculateOrderSummary();
-      dom.stickyCountBadge.textContent = summary.totalCount;
-      dom.headerBadge.textContent = summary.totalCount;
-      dom.stickyTotalPrice.textContent = formatMoney(summary.totalPrice);
-      dom.clearAllBtn.disabled = summary.totalCount === 0;
+      const summary = getOrderSummary();
+      dom.stickyCount.textContent = summary.totalCount;
+      dom.stickyTotal.textContent = formatMoney(summary.totalPrice);
+      dom.clearSelectionBtn.disabled = summary.totalCount === 0;
     }
 
-    function renderSummaryModal() {
-      const summary = calculateOrderSummary();
-      dom.modalSubtitle.textContent = `${summary.totalCount} ${
+    function renderDetailModal() {
+      const summary = getOrderSummary();
+      dom.modalCountLabel.textContent = `${summary.totalCount} ${
         summary.totalCount === 1 ? "figurita seleccionada" : "figuritas seleccionadas"
       }`;
-      dom.modalTotalPrice.textContent = formatMoney(summary.totalPrice);
+      dom.modalTotal.textContent = formatMoney(summary.totalPrice);
 
       if (summary.totalCount === 0) {
         dom.modalBody.innerHTML = `
           <div class="text-center py-8 text-slate-500 text-sm">
-            Aún no has marcado ninguna figurita.<br/>
+            Todavía no has marcado ninguna figurita.<br/>
             Toca los números disponibles para armar tu pedido.
           </div>
         `;
         return;
       }
 
-      dom.modalBody.innerHTML = "";
-      summary.byAlbum.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "rounded-xl border border-slate-200 p-3.5 space-y-2.5 bg-white";
+      let html = "";
 
-        let html = `
-          <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
-            <h4 class="font-bold text-sm text-slate-900">${item.album.nombre}</h4>
-            <span class="text-xs font-bold text-emerald-700">${formatMoney(item.subtotalAlbum)}</span>
+      if (summary.normales.length > 0) {
+        const subNormal = summary.normales.reduce((acc, i) => acc + i.price, 0);
+        html += `
+          <div class="rounded-xl border border-slate-200 p-3.5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+              <span>Normales (${summary.normales.length})</span>
+              <span>${formatMoney(subNormal)}</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${summary.normales
+                .map(
+                  (i) => `
+                <button
+                  type="button"
+                  data-remove-num="${i.num}"
+                  title="Quitar ${i.label}"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-rose-100 hover:text-rose-700 text-slate-800 text-xs font-bold transition-colors"
+                >
+                  <span>#${i.label}</span>
+                  <span class="text-[10px] opacity-60">×</span>
+                </button>`
+                )
+                .join("")}
+            </div>
           </div>
         `;
+      }
 
-        if (item.normales.length > 0) {
-          html += `
-            <div>
-              <div class="flex items-center justify-between text-xs text-slate-600 mb-1.5">
-                <span>Normales (${item.normales.length} × ${formatMoney(item.album.precioNormal)})</span>
-                <span class="font-semibold">${formatMoney(item.subtotalNormales)}</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5">
-                ${item.normales
-                  .map(
-                    (n) => `
-                  <button
-                    type="button"
-                    data-remove-album="${item.album.id}"
-                    data-remove-num="${n}"
-                    title="Quitar número ${n}"
-                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-rose-100 hover:text-rose-700 text-slate-800 text-xs font-bold transition-colors"
-                  >
-                    <span>#${n}</span>
-                    <span class="text-[10px] opacity-60">×</span>
-                  </button>`
-                  )
-                  .join("")}
-              </div>
+      if (summary.especiales.length > 0) {
+        const subEsp = summary.especiales.reduce((acc, i) => acc + i.price, 0);
+        html += `
+          <div class="rounded-xl border border-amber-200 bg-amber-50/40 p-3.5 space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-amber-900">
+              <span>Especiales ⭐ (${summary.especiales.length})</span>
+              <span>${formatMoney(subEsp)}</span>
             </div>
-          `;
-        }
-
-        if (item.especiales.length > 0) {
-          html += `
-            <div>
-              <div class="flex items-center justify-between text-xs text-amber-800 mb-1.5">
-                <span>Especiales ⭐ (${item.especiales.length} × ${formatMoney(item.album.precioEspecial)})</span>
-                <span class="font-semibold">${formatMoney(item.subtotalEspeciales)}</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5">
-                ${item.especiales
-                  .map(
-                    (n) => `
-                  <button
-                    type="button"
-                    data-remove-album="${item.album.id}"
-                    data-remove-num="${n}"
-                    title="Quitar especial ${n}"
-                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-rose-100 hover:text-rose-700 text-amber-900 text-xs font-bold transition-colors"
-                  >
-                    <span>★${n}</span>
-                    <span class="text-[10px] opacity-60">×</span>
-                  </button>`
-                  )
-                  .join("")}
-              </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${summary.especiales
+                .map(
+                  (i) => `
+                <button
+                  type="button"
+                  data-remove-num="${i.num}"
+                  title="Quitar especial ${i.label}"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-rose-100 hover:text-rose-700 text-amber-950 text-xs font-bold transition-colors"
+                >
+                  <span>★${i.label}</span>
+                  <span class="text-[10px] opacity-60">×</span>
+                </button>`
+                )
+                .join("")}
             </div>
-          `;
-        }
+          </div>
+        `;
+      }
 
-        card.innerHTML = html;
-        dom.modalBody.appendChild(card);
-      });
+      dom.modalBody.innerHTML = html;
 
-      // Permitir quitar figuritas individuales directamente desde el modal
       dom.modalBody.querySelectorAll("[data-remove-num]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const albumId = btn.dataset.removeAlbum;
           const num = Number(btn.dataset.removeNum);
-          state.selectedByAlbum[albumId].delete(num);
+          state.selected.delete(num);
           saveSelection();
           renderAll();
-          renderSummaryModal();
+          renderDetailModal();
         });
       });
     }
 
     function renderAll() {
-      renderAlbumTabs();
-      renderAlbumHeader();
+      renderHeaderStats();
       renderFilterPills();
       renderGrid();
       renderStickyBar();
     }
 
     /* =========================================================================
-       5. INTERACCIONES DEL USUARIO
+       7. INTERACCIONES DEL USUARIO
        ========================================================================= */
     function toggleSticker(num) {
-      const selectedSet = state.selectedByAlbum[state.activeAlbumId];
-      if (selectedSet.has(num)) {
-        selectedSet.delete(num);
+      if (state.selected.has(num)) {
+        state.selected.delete(num);
       } else {
-        selectedSet.add(num);
+        state.selected.add(num);
       }
       saveSelection();
-      renderAlbumTabs();
       renderFilterPills();
       renderGrid();
       renderStickyBar();
     }
 
     /**
-     * Procesa la lista pegada por el cliente y marca las figuritas disponibles.
+     * Marca automáticamente todas las figuritas disponibles de la lista pegada en el input.
      */
-    function handlePasteList() {
-      const rawText = dom.pasteTextarea.value.trim();
-      if (!rawText) {
-        showToast("Pega al menos un número para buscarlo");
+    function handleMarkList() {
+      const raw = dom.searchPasteInput.value.trim();
+      if (!raw) {
+        showToast("Escribe o pega al menos un número (ej: 01, 15, 42)");
+        dom.searchPasteInput.focus();
         return;
       }
 
-      const album = getActiveAlbum();
-      const availableSet = state.albumMaps[album.id].available;
-      const selectedSet = state.selectedByAlbum[album.id];
-
-      // Extraer todos los bloques numéricos separados por comas, espacios, guiones o saltos de línea
-      const matches = rawText.match(/\d+/g);
+      const matches = raw.match(/\d+/g);
       if (!matches || matches.length === 0) {
-        showToast("No se encontraron números válidos en el texto");
+        showToast("No encontramos números válidos en el texto");
         return;
       }
 
-      // Eliminar duplicados manteniendo orden numérico
-      const uniqueNums = Array.from(new Set(matches.map((n) => parseInt(n, 10)))).sort((a, b) => a - b);
+      const uniqueNums = Array.from(new Set(matches.map((m) => parseInt(m, 10)))).sort((a, b) => a - b);
 
       const newlyMarked = [];
-      const alreadyMarked = [];
+      const alreadySelected = [];
       const outOfStock = [];
       const outOfRange = [];
 
       uniqueNums.forEach((num) => {
-        if (num < 1 || num > album.totalFiguras) {
-          outOfRange.push(num);
-        } else if (availableSet.has(num)) {
-          if (selectedSet.has(num)) {
-            alreadyMarked.push(num);
-          } else {
-            selectedSet.add(num);
-            newlyMarked.push(num);
-          }
+        if (num < 1 || num > TOTAL_STICKERS) {
+          outOfRange.push(String(num));
+          return;
+        }
+        const item = state.stickers[num - 1];
+        if (!item || !item.available) {
+          outOfStock.push(formatNum(num));
+        } else if (state.selected.has(num)) {
+          alreadySelected.push(formatNum(num));
         } else {
-          outOfStock.push(num);
+          state.selected.add(num);
+          newlyMarked.push(formatNum(num));
         }
       });
 
       saveSelection();
+
+      // Limpiar filtro de búsqueda para que el cliente vea la cuadrícula completa actualizada
+      state.searchRaw = "";
+      dom.searchPasteInput.value = "";
+      dom.clearInputBtn.classList.add("hidden");
+
       renderAll();
 
-      // Mostrar resumen detallado en el panel
-      const resultLines = [];
+      const feedbackLines = [];
       if (newlyMarked.length > 0) {
-        resultLines.push(
-          `<p class="text-emerald-700"><strong class="font-bold">✓ Marcadas (${newlyMarked.length}):</strong> ${newlyMarked.join(", ")}</p>`
+        feedbackLines.push(
+          `<p class="text-emerald-700"><strong class="font-bold">✓ Encontradas y marcadas (${newlyMarked.length}):</strong> ${newlyMarked.join(", ")}</p>`
         );
       }
-      if (alreadyMarked.length > 0) {
-        resultLines.push(
-          `<p class="text-indigo-700"><strong class="font-bold">• Ya estaban elegidas (${alreadyMarked.length}):</strong> ${alreadyMarked.join(", ")}</p>`
+      if (alreadySelected.length > 0) {
+        feedbackLines.push(
+          `<p class="text-indigo-700"><strong class="font-bold">• Ya estaban seleccionadas (${alreadySelected.length}):</strong> ${alreadySelected.join(", ")}</p>`
         );
       }
       if (outOfStock.length > 0) {
-        resultLines.push(
+        feedbackLines.push(
           `<p class="text-rose-600"><strong class="font-bold">✕ Agotadas (${outOfStock.length}):</strong> ${outOfStock.join(", ")}</p>`
         );
       }
       if (outOfRange.length > 0) {
-        resultLines.push(
-          `<p class="text-slate-500"><strong class="font-bold">? Fuera del álbum (${outOfRange.length}):</strong> ${outOfRange.join(", ")}</p>`
+        feedbackLines.push(
+          `<p class="text-slate-500"><strong class="font-bold">? Fuera del 01 al 180 (${outOfRange.length}):</strong> ${outOfRange.join(", ")}</p>`
         );
       }
 
-      dom.pasteResult.innerHTML = resultLines.join("");
-      dom.pasteResult.classList.remove("hidden");
+      dom.pasteFeedbackBody.innerHTML = feedbackLines.join("");
+      dom.pasteFeedback.classList.remove("hidden");
 
       if (newlyMarked.length > 0) {
-        showToast(`Se marcaron ${newlyMarked.length} figuritas disponibles`);
-      } else if (outOfStock.length > 0 && alreadyMarked.length === 0) {
-        showToast("Las figuritas buscadas están agotadas");
+        showToast(`¡Listo! Se marcaron ${newlyMarked.length} figurita(s)`);
+      } else if (outOfStock.length > 0 && alreadySelected.length === 0) {
+        showToast("Las figuritas de tu lista están agotadas");
       } else {
         showToast("Tu selección ya estaba al día");
       }
     }
 
-    function sendToWhatsApp() {
-      const summary = calculateOrderSummary();
+    function sendWhatsAppOrder() {
+      const summary = getOrderSummary();
       if (summary.totalCount === 0) {
         showToast("Selecciona al menos una figurita primero");
         return;
       }
       const message = buildWhatsAppMessage();
-      const cleanPhone = String(CONFIG.whatsapp).replace(/\D/g, "");
-      const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+      const phone = String(CONFIG.whatsapp).replace(/\D/g, "");
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(url, "_blank", "noopener,noreferrer");
     }
 
     function copyOrderText() {
-      const summary = calculateOrderSummary();
+      const summary = getOrderSummary();
       if (summary.totalCount === 0) {
-        showToast("No hay figuritas seleccionadas para copiar");
+        showToast("No hay figuritas seleccionadas");
         return;
       }
-
       const message = buildWhatsAppMessage();
       try {
-        const tempTextarea = document.createElement("textarea");
-        tempTextarea.value = message;
-        tempTextarea.style.position = "fixed";
-        tempTextarea.style.opacity = "0";
-        document.body.appendChild(tempTextarea);
-        tempTextarea.focus();
-        tempTextarea.select();
+        const temp = document.createElement("textarea");
+        temp.value = message;
+        temp.style.position = "fixed";
+        temp.style.opacity = "0";
+        document.body.appendChild(temp);
+        temp.focus();
+        temp.select();
         document.execCommand("copy");
-        document.body.removeChild(tempTextarea);
+        document.body.removeChild(temp);
         showToast("¡Pedido copiado al portapapeles!");
       } catch (err) {
         showToast("No se pudo copiar automáticamente");
       }
     }
 
-    function openSummaryModal() {
-      renderSummaryModal();
-      dom.summaryModal.classList.remove("hidden");
+    function openDetailModal() {
+      renderDetailModal();
+      dom.detailModal.classList.remove("hidden");
     }
 
-    function closeSummaryModal() {
-      dom.summaryModal.classList.add("hidden");
+    function closeDetailModal() {
+      dom.detailModal.classList.add("hidden");
     }
 
     /* =========================================================================
-       6. EVENTOS E INICIALIZACIÓN
+       8. EVENTOS E INICIALIZACIÓN
        ========================================================================= */
     function bindEvents() {
-      // Buscador instantáneo
-      dom.searchInput.addEventListener("input", (e) => {
-        state.searchQuery = e.target.value;
-        dom.clearSearchBtn.classList.toggle("hidden", !state.searchQuery);
+      // Búsqueda en tiempo real
+      dom.searchPasteInput.addEventListener("input", (e) => {
+        state.searchRaw = e.target.value;
+        dom.clearInputBtn.classList.toggle("hidden", !state.searchRaw);
         renderGrid();
       });
 
-      dom.clearSearchBtn.addEventListener("click", () => {
-        state.searchQuery = "";
-        dom.searchInput.value = "";
-        dom.clearSearchBtn.classList.add("hidden");
-        renderGrid();
-        dom.searchInput.focus();
-      });
-
-      // Panel "Pegar lista de faltantes"
-      dom.togglePasteBtn.addEventListener("click", () => {
-        const isHidden = dom.pastePanel.classList.toggle("hidden");
-        dom.pasteChevron.classList.toggle("rotate-180", !isHidden);
-        if (!isHidden) {
-          dom.pasteTextarea.focus();
+      // Permitir presionar Enter para ejecutar "Marcar lista"
+      dom.searchPasteInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleMarkList();
         }
       });
 
-      dom.pasteClearBtn.addEventListener("click", () => {
-        dom.pasteTextarea.value = "";
-        dom.pasteResult.classList.add("hidden");
-        dom.pasteTextarea.focus();
+      dom.clearInputBtn.addEventListener("click", () => {
+        state.searchRaw = "";
+        dom.searchPasteInput.value = "";
+        dom.clearInputBtn.classList.add("hidden");
+        renderGrid();
+        dom.searchPasteInput.focus();
       });
 
-      dom.pasteApplyBtn.addEventListener("click", handlePasteList);
+      dom.markListBtn.addEventListener("click", handleMarkList);
+      dom.closeFeedbackBtn.addEventListener("click", () => {
+        dom.pasteFeedback.classList.add("hidden");
+      });
 
-      // Restablecer filtros desde estado vacío
+      // Recargar stock en vivo
+      dom.reloadStockBtn.addEventListener("click", () => loadStock(true));
+      dom.retryLoadBtn.addEventListener("click", () => loadStock(true));
+
+      // Restablecer filtros
       dom.resetFiltersBtn.addEventListener("click", () => {
         state.filter = "all";
-        state.searchQuery = "";
-        dom.searchInput.value = "";
-        dom.clearSearchBtn.classList.add("hidden");
+        state.searchRaw = "";
+        dom.searchPasteInput.value = "";
+        dom.clearInputBtn.classList.add("hidden");
         renderFilterPills();
         renderGrid();
       });
 
-      // Abrir / cerrar modal de detalle
-      dom.stickyDetailTrigger.addEventListener("click", openSummaryModal);
-      dom.headerSummaryBtn.addEventListener("click", openSummaryModal);
-      dom.closeModalBtn.addEventListener("click", closeSummaryModal);
-      dom.summaryModal.addEventListener("click", (e) => {
-        if (e.target === dom.summaryModal) closeSummaryModal();
+      // Modal de detalle
+      dom.openDetailBtn.addEventListener("click", openDetailModal);
+      dom.closeDetailBtn.addEventListener("click", closeDetailModal);
+      dom.detailModal.addEventListener("click", (e) => {
+        if (e.target === dom.detailModal) closeDetailModal();
       });
 
-      // Copiar y enviar por WhatsApp
+      // WhatsApp y copiar
+      dom.whatsappBtn.addEventListener("click", sendWhatsAppOrder);
+      dom.modalWhatsappBtn.addEventListener("click", sendWhatsAppOrder);
       dom.copyOrderBtn.addEventListener("click", copyOrderText);
-      dom.whatsappSendBtn.addEventListener("click", sendToWhatsApp);
-      dom.modalWhatsappBtn.addEventListener("click", sendToWhatsApp);
 
-      // Modal de confirmación para limpiar todo
-      dom.clearAllBtn.addEventListener("click", () => {
+      // Confirmación para limpiar selección
+      dom.clearSelectionBtn.addEventListener("click", () => {
         dom.confirmClearModal.classList.remove("hidden");
       });
-
       dom.cancelClearBtn.addEventListener("click", () => {
         dom.confirmClearModal.classList.add("hidden");
       });
-
       dom.confirmClearModal.addEventListener("click", (e) => {
         if (e.target === dom.confirmClearModal) {
           dom.confirmClearModal.classList.add("hidden");
         }
       });
-
       dom.confirmClearBtn.addEventListener("click", () => {
-        CONFIG.albumes.forEach((album) => {
-          state.selectedByAlbum[album.id].clear();
-        });
+        state.selected.clear();
         saveSelection();
         dom.confirmClearModal.classList.add("hidden");
         renderAll();
@@ -1196,13 +1366,12 @@
       });
     }
 
-    // Arranque de la aplicación
     document.addEventListener("DOMContentLoaded", () => {
-      dom.storeTitle.textContent = CONFIG.nombreTienda;
-      document.title = CONFIG.nombreTienda;
-      initAlbumData();
+      dom.albumTitle.textContent = CONFIG.nombreAlbum;
+      dom.albumSubtitle.textContent = CONFIG.subtitulo;
+      document.title = CONFIG.nombreAlbum;
       bindEvents();
-      renderAll();
+      loadStock(false);
     });
   </script>
 </body>
