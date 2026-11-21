@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo Interactivo de Figuritas</title>
+  <!-- Fuente Inter para una lectura limpia y moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS desde CDN (sin compilación, 100% listo para GitHub Pages) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-800 pb-36">
+
+  <!-- ==================== ENCABEZADO SUPERIOR ==================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <!-- Icono de tienda -->
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h1 id="store-title" class="text-lg sm:text-xl font-extrabold text-slate-900 truncate">Catálogo de Figuritas</h1>
+            <p class="text-xs sm:text-sm text-slate-500 truncate">Marca las que te faltan y envía tu pedido por WhatsApp</p>
+          </div>
+        </div>
+
+        <!-- Botón rápido para ver resumen en pantallas medianas/grandes -->
+        <button
+          id="header-summary-btn"
+          type="button"
+          class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors shrink-0"
+        >
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span>Mi pedido</span>
+          <span id="header-badge" class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-600 text-white">0</span>
+        </button>
+      </div>
+
+      <!-- Selector de Álbumes (Pestañas) -->
+      <nav aria-label="Selector de álbumes" class="mt-3 pt-2 border-t border-slate-100">
+        <div id="album-tabs" class="flex gap-2 overflow-x-auto pb-1">
+          <!-- Se renderiza dinámicamente desde CONFIG.albumes -->
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="max-w-6xl mx-auto px-4 pt-4 sm:pt-6 space-y-4">
+
+    <!-- Tarjeta de información del álbum activo -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h2 id="active-album-name" class="text-lg font-bold text-slate-900">Cargando álbum...</h2>
+            <span id="active-album-stock-pill" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+              0 disponibles
+            </span>
+          </div>
+          <p id="active-album-subtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5"></p>
+        </div>
+
+        <!-- Precios del álbum activo -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border-2 border-slate-400"></span>
+            <span>Normal:</span>
+            <span id="price-normal-label" class="font-bold text-slate-900">S/ 1.00</span>
+          </div>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
+            <svg class="w-3.5 h-3.5 text-amber-500 fill-amber-400" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span>Especial:</span>
+            <span id="price-special-label" class="font-bold text-amber-900">S/ 3.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de búsqueda y botón "Pegar lista de faltantes" -->
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+        <!-- Buscador instantáneo -->
+        <div class="relative sm:col-span-7">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+            </svg>
+          </span>
+          <input
+            id="search-input"
+            type="text"
+            inputmode="numeric"
+            placeholder="Buscar número (ej: 15, 108)..."
+            class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm transition-all"
+          />
+          <button
+            id="clear-search-btn"
+            type="button"
+            aria-label="Limpiar búsqueda"
+            class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Botón para abrir/cerrar panel de pegar lista -->
+        <button
+          id="toggle-paste-btn"
+          type="button"
+          class="sm:col-span-5 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 border border-indigo-200 font-semibold text-sm transition-colors"
+        >
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          <span>Pegar mi lista de faltantes</span>
+          <svg id="paste-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Panel colapsable: Pegar lista de faltantes -->
+      <div id="paste-panel" class="hidden mt-3 p-3.5 rounded-xl bg-indigo-50/60 border border-indigo-100 space-y-3">
+        <div class="flex items-start justify-between gap-2">
+          <p class="text-xs sm:text-sm text-slate-700">
+            Pega tus números faltantes separados por <strong>comas, espacios o saltos de línea</strong> y marcaremos automáticamente los que tenemos en stock en este álbum.
+          </p>
+        </div>
+        <textarea
+          id="paste-textarea"
+          rows="3"
+          placeholder="Ejemplo: 1, 5, 12, 45, 99"
+          class="w-full p-3 rounded-xl border border-indigo-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none text-sm resize-y"
+        ></textarea>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <button
+            id="paste-clear-btn"
+            type="button"
+            class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-white/80 transition-colors"
+          >
+            Limpiar texto
+          </button>
+          <button
+            id="paste-apply-btn"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold shadow-sm transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Marcar disponibles</span>
+          </button>
+        </div>
+        <!-- Resultado del procesamiento de la lista pegada -->
+        <div id="paste-result" class="hidden rounded-xl bg-white border border-slate-200 p-3 text-xs space-y-1.5"></div>
+      </div>
+
+      <!-- Filtros rápidos (Píldoras) -->
+      <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div id="filter-pills" class="flex flex-wrap gap-2">
+          <!-- Botones generados dinámicamente con contadores -->
+        </div>
+
+        <!-- Leyenda compacta de los 4 estados -->
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-medium text-slate-600">
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-white border border-slate-300 inline-block"></span>
+            Disponible
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-amber-50 border-2 border-amber-400 inline-block"></span>
+            Especial
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-emerald-500 border border-emerald-600 inline-block"></span>
+            Elegida
+          </span>
+          <span class="inline-flex items-center gap-1">
+            <span class="w-3 h-3 rounded bg-slate-200 border border-slate-200 inline-block opacity-70"></span>
+            Agotada
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cuadrícula de Figuritas -->
+    <section aria-label="Listado de figuritas">
+      <div
+        id="stickers-grid"
+        class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2 sm:gap-2.5"
+      >
+        <!-- Botones de figuritas generados dinámicamente -->
+      </div>
+
+      <!-- Estado vacío cuando un filtro o búsqueda no devuelve resultados -->
+      <div id="empty-state" class="hidden bg-white rounded-2xl border border-slate-200 p-8 text-center">
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-sm font-bold text-slate-800">No encontramos figuritas con ese filtro</h3>
+        <p class="text-xs text-slate-500 mt-1">Prueba cambiando el filtro o limpiando el buscador.</p>
+        <button
+          id="reset-filters-btn"
+          type="button"
+          class="mt-3 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold transition-colors"
+        >
+          Ver todas las figuritas
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== BARRA INFERIOR FIJA (STICKY BAR) ==================== -->
+  <footer class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.08)]">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
+      <div class="flex items-center justify-between gap-2 sm:gap-4">
+        <!-- Resumen izquierdo: cantidad y total -->
+        <button
+          id="sticky-detail-trigger"
+          type="button"
+          class="flex items-center gap-2.5 sm:gap-3 text-left rounded-xl p-1.5 -ml-1.5 hover:bg-slate-100 transition-colors min-w-0"
+          title="Ver detalle del pedido"
+        >
+          <div class="relative w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span id="sticky-count-badge" class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold flex items-center justify-center">
+              0
+            </span>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1">
+              <span class="text-[11px] font-medium text-slate-500">Total a pagar</span>
+              <span class="text-[11px] font-semibold text-indigo-600 underline">Ver detalle</span>
+            </div>
+            <p id="sticky-total-price" class="text-base sm:text-lg font-extrabold text-slate-900 leading-tight truncate">
+              S/ 0.00
+            </p>
+          </div>
+        </button>
+
+        <!-- Botones de acción derecha -->
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- Botón limpiar selección -->
+          <button
+            id="clear-all-btn"
+            type="button"
+            disabled
+            title="Limpiar selección"
+            class="p-2.5 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+            aria-label="Limpiar selección"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+
+          <!-- Botón principal WhatsApp -->
+          <button
+            id="whatsapp-send-btn"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm shadow-sm shadow-emerald-600/20 transition-all"
+          >
+            <!-- Icono WhatsApp -->
+            <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.766.469 3.484 1.344 5l-1.406 5.156 5.281-1.391c1.469.797 3.109 1.219 4.75 1.219 5.516 0 9.969-4.453 9.969-9.969S17.547 2 12.031 2zm5.828 14.125c-.25.703-1.438 1.344-2 1.422-.516.078-1.172.109-1.891-.125-.438-.141-1-.328-1.719-.641-3.016-1.313-4.984-4.359-5.141-4.563-.141-.203-1.219-1.625-1.219-3.109s.766-2.203 1.047-2.5c.281-.297.609-.375.813-.375.203 0 .406.016.578.016.188 0 .438-.078.688.516.25.609.859 2.094.938 2.25.078.156.125.344.031.547-.094.203-.156.328-.313.5-.156.172-.313.391-.453.516-.156.141-.313.297-.141.594.172.297.766 1.266 1.656 2.063 1.141 1.016 2.109 1.328 2.406 1.484.297.156.469.125.641-.078.172-.203.75-.875.953-1.172.203-.297.406-.25.672-.156.266.094 1.719.813 2.016.953.297.156.5.219.578.344.078.125.078.734-.172 1.438z" />
+            </svg>
+            <span class="hidden sm:inline">Enviar pedido por WhatsApp</span>
+            <span class="sm:hidden">Pedir por WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL DE DETALLE DEL PEDIDO ==================== -->
+  <div id="summary-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/50 backdrop-blur-xs">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[85vh] flex flex-col overflow-hidden">
+      <!-- Cabecera del modal -->
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Detalle de tu pedido</h3>
+          <p id="modal-subtitle" class="text-xs text-slate-500">0 figuritas seleccionadas</p>
+        </div>
+        <button
+          id="close-modal-btn"
+          type="button"
+          class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          aria-label="Cerrar detalle"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div id="modal-body" class="p-5 overflow-y-auto space-y-4 flex-1">
+        <!-- Se llena dinámicamente -->
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="px-5 py-4 bg-slate-50 border-t border-slate-200 space-y-3">
+        <div class="flex items-center justify-between text-base font-extrabold text-slate-900">
+          <span>Total estimado</span>
+          <span id="modal-total-price" class="text-emerald-700">S/ 0.00</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button
+            id="copy-order-btn"
+            type="button"
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-sm font-semibold transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span>Copiar lista</span>
+          </button>
+          <button
+            id="modal-whatsapp-btn"
+            type="button"
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold transition-colors"
+          >
+            <span>Enviar WhatsApp</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DE CONFIRMACIÓN PARA LIMPIAR ==================== -->
+  <div id="confirm-clear-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">¿Limpiar toda tu selección?</h3>
+          <p class="text-xs text-slate-500 mt-1">Se desmarcarán todas las figuritas elegidas en todos los álbumes.</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button
+          id="cancel-clear-btn"
+          type="button"
+          class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          id="confirm-clear-btn"
+          type="button"
+          class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold transition-colors"
+        >
+          Sí, limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NOTIFICACIÓN FLOTANTE (TOAST) ==================== -->
+  <div id="toast" class="pointer-events-none fixed top-20 left-1/2 -translate-x-1/2 z-50 opacity-0 transition-opacity duration-200">
+    <div id="toast-content" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold shadow-lg flex items-center gap-2 whitespace-nowrap">
+      <!-- Mensaje dinámico -->
+    </div>
+  </div>
+
+  <!-- ==================== LÓGICA DE LA APLICACIÓN ==================== -->
+  <script>
+    /* =========================================================================
+       1. CONFIGURACIÓN PRINCIPAL (EDITA AQUÍ TUS DATOS, PRECIOS Y STOCK)
+       =========================================================================
+       Instrucciones rápidas:
+       - whatsapp: Tu número con código de país, sin "+" ni espacios (Ej. Perú: "51999999999").
+       - moneda: Símbolo de tu moneda (Ej. "S/").
+       - albumes: Puedes editar estos 2 álbumes o agregar más copiando el mismo formato.
+         * totalFiguras: Número más alto del álbum (ej. 120 genera del 1 al 120).
+         * disponibles: Lista de números que SÍ tienes en stock.
+         * especiales: Lista de números que son dorados/holográficos (tienen precio especial).
+    ========================================================================= */
+    const CONFIG = {
+      whatsapp: "51999999999",
+      moneda: "S/",
+      nombreTienda: "Catálogo de Figuritas",
+      albumes: [
+        {
+          id: "mundial-2026",
+          nombre: "Mundial 2026",
+          subtitulo: "Colección Oficial • Sueltas y Doradas",
+          totalFiguras: 120,
+          precioNormal: 1.00,
+          precioEspecial: 3.00,
+          // Números que SÍ tienes en stock (los que no estén aquí aparecerán como Agotados)
+          disponibles: [
+            1, 2, 3, 5, 7, 8, 10, 11, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25,
+            27, 29, 30, 31, 33, 35, 36, 38, 40, 41, 42, 44, 45, 47, 48, 50,
+            52, 53, 55, 56, 58, 60, 61, 63, 64, 66, 68, 70, 71, 72, 74, 75,
+            77, 79, 80, 82, 84, 85, 87, 88, 90, 91, 93, 95, 96, 98, 99, 100,
+            102, 104, 105, 107, 108, 110, 112, 114, 115, 118, 120
+          ],
+          // Números que son especiales / doradas / holográficas
+          especiales: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+        },
+        {
+          id: "copa-america",
+          nombre: "Copa América",
+          subtitulo: "Edición Coleccionista • Stock actualizado",
+          totalFiguras: 80,
+          precioNormal: 1.00,
+          precioEspecial: 3.00,
+          disponibles: [
+            1, 2, 4, 6, 7, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 25, 26, 28,
+            30, 31, 33, 34, 36, 38, 40, 41, 43, 45, 46, 48, 50, 52, 54, 55,
+            57, 59, 60, 62, 63, 65, 67, 68, 70, 72, 74, 76, 78, 80
+          ],
+          especiales: [1, 10, 20, 30, 40, 50, 60, 70, 80]
+        }
+      ]
+    };
+
+    /* =========================================================================
+       2. ESTADO DE LA APLICACIÓN (NO NECESITAS EDITAR DE AQUÍ EN ADELANTE)
+       ========================================================================= */
+    const STORAGE_KEY = "catalogo_figuritas_seleccion_v1";
+
+    const state = {
+      activeAlbumId: CONFIG.albumes[0]?.id || "",
+      filter: "all", // "all" | "available" | "special" | "selected"
+      searchQuery: "",
+      // Mapa de selección por álbum: { [albumId]: Set<number> }
+      selectedByAlbum: {},
+      // Sets optimizados para consultas instantáneas
+      albumMaps: {}
+    };
+
+    // Referencias a elementos del DOM
+    const dom = {
+      storeTitle: document.getElementById("store-title"),
+      albumTabs: document.getElementById("album-tabs"),
+      activeAlbumName: document.getElementById("active-album-name"),
+      activeAlbumSubtitle: document.getElementById("active-album-subtitle"),
+      activeAlbumStockPill: document.getElementById("active-album-stock-pill"),
+      priceNormalLabel: document.getElementById("price-normal-label"),
+      priceSpecialLabel: document.getElementById("price-special-label"),
+      searchInput: document.getElementById("search-input"),
+      clearSearchBtn: document.getElementById("clear-search-btn"),
+      togglePasteBtn: document.getElementById("toggle-paste-btn"),
+      pasteChevron: document.getElementById("paste-chevron"),
+      pastePanel: document.getElementById("paste-panel"),
+      pasteTextarea: document.getElementById("paste-textarea"),
+      pasteClearBtn: document.getElementById("paste-clear-btn"),
+      pasteApplyBtn: document.getElementById("paste-apply-btn"),
+      pasteResult: document.getElementById("paste-result"),
+      filterPills: document.getElementById("filter-pills"),
+      stickersGrid: document.getElementById("stickers-grid"),
+      emptyState: document.getElementById("empty-state"),
+      resetFiltersBtn: document.getElementById("reset-filters-btn"),
+      headerSummaryBtn: document.getElementById("header-summary-btn"),
+      headerBadge: document.getElementById("header-badge"),
+      stickyDetailTrigger: document.getElementById("sticky-detail-trigger"),
+      stickyCountBadge: document.getElementById("sticky-count-badge"),
+      stickyTotalPrice: document.getElementById("sticky-total-price"),
+      clearAllBtn: document.getElementById("clear-all-btn"),
+      whatsappSendBtn: document.getElementById("whatsapp-send-btn"),
+      summaryModal: document.getElementById("summary-modal"),
+      closeModalBtn: document.getElementById("close-modal-btn"),
+      modalSubtitle: document.getElementById("modal-subtitle"),
+      modalBody: document.getElementById("modal-body"),
+      modalTotalPrice: document.getElementById("modal-total-price"),
+      copyOrderBtn: document.getElementById("copy-order-btn"),
+      modalWhatsappBtn: document.getElementById("modal-whatsapp-btn"),
+      confirmClearModal: document.getElementById("confirm-clear-modal"),
+      cancelClearBtn: document.getElementById("cancel-clear-btn"),
+      confirmClearBtn: document.getElementById("confirm-clear-btn"),
+      toast: document.getElementById("toast"),
+      toastContent: document.getElementById("toast-content")
+    };
+
+    let toastTimer = null;
+
+    /* =========================================================================
+       3. UTILIDADES Y PERSISTENCIA
+       ========================================================================= */
+    function formatMoney(amount) {
+      return `${CONFIG.moneda} ${Number(amount).toFixed(2)}`;
+    }
+
+    function showToast(message) {
+      dom.toastContent.textContent = message;
+      dom.toast.classList.remove("opacity-0");
+      dom.toast.classList.add("opacity-100");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        dom.toast.classList.remove("opacity-100");
+        dom.toast.classList.add("opacity-0");
+      }, 2400);
+    }
+
+    function initAlbumData() {
+      CONFIG.albumes.forEach((album) => {
+        state.albumMaps[album.id] = {
+          available: new Set(album.disponibles),
+          special: new Set(album.especiales)
+        };
+        state.selectedByAlbum[album.id] = new Set();
+      });
+
+      // Restaurar selección previa del cliente si existe en el navegador
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          CONFIG.albumes.forEach((album) => {
+            const savedNums = parsed[album.id];
+            if (Array.isArray(savedNums)) {
+              const validSet = state.albumMaps[album.id].available;
+              savedNums.forEach((num) => {
+                // Solo restaurar si sigue disponible en stock
+                if (validSet.has(num)) {
+                  state.selectedByAlbum[album.id].add(num);
+                }
+              });
+            }
+          });
+        }
+      } catch (err) {
+        // Ignorar si localStorage no está disponible (modo incógnito estricto, etc.)
+      }
+    }
+
+    function saveSelection() {
+      try {
+        const payload = {};
+        CONFIG.albumes.forEach((album) => {
+          payload[album.id] = Array.from(state.selectedByAlbum[album.id]);
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        // Ignorar errores de almacenamiento
+      }
+    }
+
+    function getActiveAlbum() {
+      return CONFIG.albumes.find((a) => a.id === state.activeAlbumId) || CONFIG.albumes[0];
+    }
+
+    /**
+     * Calcula el resumen completo de todas las figuritas seleccionadas en todos los álbumes.
+     */
+    function calculateOrderSummary() {
+      let totalCount = 0;
+      let totalPrice = 0;
+      const byAlbum = [];
+
+      CONFIG.albumes.forEach((album) => {
+        const selectedSet = state.selectedByAlbum[album.id];
+        if (!selectedSet || selectedSet.size === 0) return;
+
+        const specialSet = state.albumMaps[album.id].special;
+        const normales = [];
+        const especiales = [];
+
+        Array.from(selectedSet)
+          .sort((a, b) => a - b)
+          .forEach((num) => {
+            if (specialSet.has(num)) {
+              especiales.push(num);
+            } else {
+              normales.push(num);
+            }
+          });
+
+        const subtotalNormales = normales.length * album.precioNormal;
+        const subtotalEspeciales = especiales.length * album.precioEspecial;
+        const subtotalAlbum = subtotalNormales + subtotalEspeciales;
+        const countAlbum = normales.length + especiales.length;
+
+        totalCount += countAlbum;
+        totalPrice += subtotalAlbum;
+
+        byAlbum.push({
+          album,
+          normales,
+          especiales,
+          subtotalNormales,
+          subtotalEspeciales,
+          subtotalAlbum,
+          countAlbum
+        });
+      });
+
+      return { totalCount, totalPrice, byAlbum };
+    }
+
+    /**
+     * Construye el texto formateado y ordenado listo para enviar por WhatsApp o copiar.
+     */
+    function buildWhatsAppMessage() {
+      const summary = calculateOrderSummary();
+      if (summary.totalCount === 0) return "";
+
+      const lines = [];
+      lines.push(`¡Hola! 👋 Quisiera hacer un pedido de figuritas de *${CONFIG.nombreTienda}*:`);
+      lines.push("");
+
+      summary.byAlbum.forEach((item) => {
+        lines.push(`📘 *${item.album.nombre}* (${item.countAlbum} fig.):`);
+        if (item.normales.length > 0) {
+          lines.push(`• Normales (${item.normales.length} x ${formatMoney(item.album.precioNormal)}): ${item.normales.join(", ")}`);
+        }
+        if (item.especiales.length > 0) {
+          lines.push(`• Especiales ⭐ (${item.especiales.length} x ${formatMoney(item.album.precioEspecial)}): ${item.especiales.join(", ")}`);
+        }
+        lines.push(`  Subtotal: ${formatMoney(item.subtotalAlbum)}`);
+        lines.push("");
+      });
+
+      lines.push(`📦 *Total de figuritas:* ${summary.totalCount}`);
+      lines.push(`💰 *Total a pagar:* ${formatMoney(summary.totalPrice)}`);
+      lines.push("");
+      lines.push("¿Me confirmas disponibilidad y forma de pago/entrega? ¡Gracias!");
+
+      return lines.join("\n");
+    }
+
+    /* =========================================================================
+       4. RENDERIZADO DE LA INTERFAZ
+       ========================================================================= */
+    function renderAlbumTabs() {
+      dom.albumTabs.innerHTML = "";
+
+      CONFIG.albumes.forEach((album) => {
+        const isActive = album.id === state.activeAlbumId;
+        const selectedCount = state.selectedByAlbum[album.id].size;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = isActive
+          ? "inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold shadow-sm shrink-0 transition-all"
+          : "inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold shrink-0 transition-all";
+
+        btn.innerHTML = `
+          <span>${album.nombre}</span>
+          ${
+            selectedCount > 0
+              ? `<span class="px-1.5 py-0.5 text-[11px] font-bold rounded-full ${
+                  isActive ? "bg-emerald-400 text-slate-900" : "bg-emerald-600 text-white"
+                }">${selectedCount}</span>`
+              : ""
+          }
+        `;
+
+        btn.addEventListener("click", () => {
+          if (state.activeAlbumId === album.id) return;
+          state.activeAlbumId = album.id;
+          state.searchQuery = "";
+          dom.searchInput.value = "";
+          dom.clearSearchBtn.classList.add("hidden");
+          dom.pasteResult.classList.add("hidden");
+          renderAll();
+        });
+
+        dom.albumTabs.appendChild(btn);
+      });
+    }
+
+    function renderAlbumHeader() {
+      const album = getActiveAlbum();
+      const maps = state.albumMaps[album.id];
+
+      dom.activeAlbumName.textContent = album.nombre;
+      dom.activeAlbumSubtitle.textContent = album.subtitulo;
+      dom.activeAlbumStockPill.textContent = `${maps.available.size} de ${album.totalFiguras} disponibles`;
+      dom.priceNormalLabel.textContent = formatMoney(album.precioNormal);
+      dom.priceSpecialLabel.textContent = formatMoney(album.precioEspecial);
+    }
+
+    function renderFilterPills() {
+      const album = getActiveAlbum();
+      const maps = state.albumMaps[album.id];
+      const selectedSet = state.selectedByAlbum[album.id];
+
+      let specialAvailableCount = 0;
+      maps.special.forEach((n) => {
+        if (n >= 1 && n <= album.totalFiguras) specialAvailableCount++;
+      });
+
+      const filters = [
+        { id: "all", label: "Todas", count: album.totalFiguras },
+        { id: "available", label: "Disponibles", count: maps.available.size },
+        { id: "special", label: "Especiales ⭐", count: specialAvailableCount },
+        { id: "selected", label: "Mis elegidas", count: selectedSet.size }
+      ];
+
+      dom.filterPills.innerHTML = "";
+
+      filters.forEach((f) => {
+        const active = state.filter === f.id;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = active
+          ? "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold transition-colors"
+          : "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors";
+
+        btn.innerHTML = `
+          <span>${f.label}</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[10px] ${
+            active ? "bg-white/20 text-white" : "bg-white text-slate-600"
+          }">${f.count}</span>
+        `;
+
+        btn.addEventListener("click", () => {
+          state.filter = f.id;
+          renderFilterPills();
+          renderGrid();
+        });
+
+        dom.filterPills.appendChild(btn);
+      });
+    }
+
+    function renderGrid() {
+      const album = getActiveAlbum();
+      const maps = state.albumMaps[album.id];
+      const selectedSet = state.selectedByAlbum[album.id];
+      const query = state.searchQuery.trim();
+
+      dom.stickersGrid.innerHTML = "";
+      const fragment = document.createDocumentFragment();
+      let visibleCount = 0;
+
+      for (let num = 1; num <= album.totalFiguras; num++) {
+        const isAvailable = maps.available.has(num);
+        const isSpecial = maps.special.has(num);
+        const isSelected = selectedSet.has(num);
+
+        // Aplicar filtro de pestaña
+        if (state.filter === "available" && !isAvailable) continue;
+        if (state.filter === "special" && !isSpecial) continue;
+        if (state.filter === "selected" && !isSelected) continue;
+
+        // Aplicar filtro de buscador
+        if (query && !String(num).includes(query)) continue;
+
+        visibleCount++;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.num = num;
+
+        if (!isAvailable) {
+          // Estado: AGOTADA
+          btn.disabled = true;
+          btn.className =
+            "relative min-h-[54px] rounded-xl bg-slate-100 border border-slate-200/80 text-slate-400 flex flex-col items-center justify-center cursor-not-allowed select-none opacity-65";
+          btn.setAttribute("aria-label", `Figurita ${num}, agotada`);
+          btn.innerHTML = `
+            ${
+              isSpecial
+                ? `<span class="absolute top-1 right-1 text-[9px] text-slate-400" aria-hidden="true">★</span>`
+                : ""
+            }
+            <span class="text-sm sm:text-base font-bold line-through decoration-slate-300">${num}</span>
+            <span class="text-[9px] font-medium uppercase tracking-tight">Agotada</span>
+          `;
+        } else if (isSelected) {
+          // Estado: SELECCIONADA (verde WhatsApp)
+          btn.className =
+            "relative min-h-[54px] rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 border-2 border-emerald-600 text-white shadow-sm shadow-emerald-500/20 flex flex-col items-center justify-center transition-all select-none";
+          btn.setAttribute("aria-pressed", "true");
+          btn.setAttribute("aria-label", `Figurita ${num}, seleccionada`);
+          btn.innerHTML = `
+            <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-white text-emerald-600 flex items-center justify-center">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+            ${
+              isSpecial
+                ? `<span class="absolute top-1 left-1.5 text-[10px] text-amber-200 leading-none" aria-hidden="true">★</span>`
+                : ""
+            }
+            <span class="text-base sm:text-lg font-extrabold leading-none">${num}</span>
+            <span class="text-[9px] font-semibold text-emerald-50 mt-0.5">${formatMoney(
+              isSpecial ? album.precioEspecial : album.precioNormal
+            )}</span>
+          `;
+        } else if (isSpecial) {
+          // Estado: DISPONIBLE ESPECIAL / DORADA
+          btn.className =
+            "relative min-h-[54px] rounded-xl bg-gradient-to-b from-amber-50 to-amber-100/70 hover:from-amber-100 hover:to-amber-100 active:scale-95 border-2 border-amber-400 text-amber-950 shadow-xs flex flex-col items-center justify-center transition-all select-none";
+          btn.setAttribute("aria-pressed", "false");
+          btn.setAttribute("aria-label", `Figurita especial ${num}, disponible`);
+          btn.innerHTML = `
+            <svg class="w-3 h-3 text-amber-500 fill-amber-400 absolute top-1 right-1" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+            <span class="text-base sm:text-lg font-extrabold leading-none">${num}</span>
+            <span class="text-[9px] font-bold text-amber-700 mt-0.5">${formatMoney(album.precioEspecial)}</span>
+          `;
+        } else {
+          // Estado: DISPONIBLE NORMAL
+          btn.className =
+            "relative min-h-[54px] rounded-xl bg-white hover:border-indigo-400 hover:bg-indigo-50/40 active:scale-95 border border-slate-200 text-slate-800 shadow-2xs flex flex-col items-center justify-center transition-all select-none";
+          btn.setAttribute("aria-pressed", "false");
+          btn.setAttribute("aria-label", `Figurita ${num}, disponible`);
+          btn.innerHTML = `
+            <span class="text-base sm:text-lg font-bold leading-none">${num}</span>
+            <span class="text-[9px] font-medium text-slate-400 mt-0.5">${formatMoney(album.precioNormal)}</span>
+          `;
+        }
+
+        if (isAvailable) {
+          btn.addEventListener("click", () => toggleSticker(num));
+        }
+
+        fragment.appendChild(btn);
+      }
+
+      dom.stickersGrid.appendChild(fragment);
+      dom.emptyState.classList.toggle("hidden", visibleCount > 0);
+    }
+
+    function renderStickyBar() {
+      const summary = calculateOrderSummary();
+      dom.stickyCountBadge.textContent = summary.totalCount;
+      dom.headerBadge.textContent = summary.totalCount;
+      dom.stickyTotalPrice.textContent = formatMoney(summary.totalPrice);
+      dom.clearAllBtn.disabled = summary.totalCount === 0;
+    }
+
+    function renderSummaryModal() {
+      const summary = calculateOrderSummary();
+      dom.modalSubtitle.textContent = `${summary.totalCount} ${
+        summary.totalCount === 1 ? "figurita seleccionada" : "figuritas seleccionadas"
+      }`;
+      dom.modalTotalPrice.textContent = formatMoney(summary.totalPrice);
+
+      if (summary.totalCount === 0) {
+        dom.modalBody.innerHTML = `
+          <div class="text-center py-8 text-slate-500 text-sm">
+            Aún no has marcado ninguna figurita.<br/>
+            Toca los números disponibles para armar tu pedido.
+          </div>
+        `;
+        return;
+      }
+
+      dom.modalBody.innerHTML = "";
+      summary.byAlbum.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "rounded-xl border border-slate-200 p-3.5 space-y-2.5 bg-white";
+
+        let html = `
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+            <h4 class="font-bold text-sm text-slate-900">${item.album.nombre}</h4>
+            <span class="text-xs font-bold text-emerald-700">${formatMoney(item.subtotalAlbum)}</span>
+          </div>
+        `;
+
+        if (item.normales.length > 0) {
+          html += `
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-600 mb-1.5">
+                <span>Normales (${item.normales.length} × ${formatMoney(item.album.precioNormal)})</span>
+                <span class="font-semibold">${formatMoney(item.subtotalNormales)}</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${item.normales
+                  .map(
+                    (n) => `
+                  <button
+                    type="button"
+                    data-remove-album="${item.album.id}"
+                    data-remove-num="${n}"
+                    title="Quitar número ${n}"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-rose-100 hover:text-rose-700 text-slate-800 text-xs font-bold transition-colors"
+                  >
+                    <span>#${n}</span>
+                    <span class="text-[10px] opacity-60">×</span>
+                  </button>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        if (item.especiales.length > 0) {
+          html += `
+            <div>
+              <div class="flex items-center justify-between text-xs text-amber-800 mb-1.5">
+                <span>Especiales ⭐ (${item.especiales.length} × ${formatMoney(item.album.precioEspecial)})</span>
+                <span class="font-semibold">${formatMoney(item.subtotalEspeciales)}</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                ${item.especiales
+                  .map(
+                    (n) => `
+                  <button
+                    type="button"
+                    data-remove-album="${item.album.id}"
+                    data-remove-num="${n}"
+                    title="Quitar especial ${n}"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-100 hover:bg-rose-100 hover:text-rose-700 text-amber-900 text-xs font-bold transition-colors"
+                  >
+                    <span>★${n}</span>
+                    <span class="text-[10px] opacity-60">×</span>
+                  </button>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `;
+        }
+
+        card.innerHTML = html;
+        dom.modalBody.appendChild(card);
+      });
+
+      // Permitir quitar figuritas individuales directamente desde el modal
+      dom.modalBody.querySelectorAll("[data-remove-num]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const albumId = btn.dataset.removeAlbum;
+          const num = Number(btn.dataset.removeNum);
+          state.selectedByAlbum[albumId].delete(num);
+          saveSelection();
+          renderAll();
+          renderSummaryModal();
+        });
+      });
+    }
+
+    function renderAll() {
+      renderAlbumTabs();
+      renderAlbumHeader();
+      renderFilterPills();
+      renderGrid();
+      renderStickyBar();
+    }
+
+    /* =========================================================================
+       5. INTERACCIONES DEL USUARIO
+       ========================================================================= */
+    function toggleSticker(num) {
+      const selectedSet = state.selectedByAlbum[state.activeAlbumId];
+      if (selectedSet.has(num)) {
+        selectedSet.delete(num);
+      } else {
+        selectedSet.add(num);
+      }
+      saveSelection();
+      renderAlbumTabs();
+      renderFilterPills();
+      renderGrid();
+      renderStickyBar();
+    }
+
+    /**
+     * Procesa la lista pegada por el cliente y marca las figuritas disponibles.
+     */
+    function handlePasteList() {
+      const rawText = dom.pasteTextarea.value.trim();
+      if (!rawText) {
+        showToast("Pega al menos un número para buscarlo");
+        return;
+      }
+
+      const album = getActiveAlbum();
+      const availableSet = state.albumMaps[album.id].available;
+      const selectedSet = state.selectedByAlbum[album.id];
+
+      // Extraer todos los bloques numéricos separados por comas, espacios, guiones o saltos de línea
+      const matches = rawText.match(/\d+/g);
+      if (!matches || matches.length === 0) {
+        showToast("No se encontraron números válidos en el texto");
+        return;
+      }
+
+      // Eliminar duplicados manteniendo orden numérico
+      const uniqueNums = Array.from(new Set(matches.map((n) => parseInt(n, 10)))).sort((a, b) => a - b);
+
+      const newlyMarked = [];
+      const alreadyMarked = [];
+      const outOfStock = [];
+      const outOfRange = [];
+
+      uniqueNums.forEach((num) => {
+        if (num < 1 || num > album.totalFiguras) {
+          outOfRange.push(num);
+        } else if (availableSet.has(num)) {
+          if (selectedSet.has(num)) {
+            alreadyMarked.push(num);
+          } else {
+            selectedSet.add(num);
+            newlyMarked.push(num);
+          }
+        } else {
+          outOfStock.push(num);
+        }
+      });
+
+      saveSelection();
+      renderAll();
+
+      // Mostrar resumen detallado en el panel
+      const resultLines = [];
+      if (newlyMarked.length > 0) {
+        resultLines.push(
+          `<p class="text-emerald-700"><strong class="font-bold">✓ Marcadas (${newlyMarked.length}):</strong> ${newlyMarked.join(", ")}</p>`
+        );
+      }
+      if (alreadyMarked.length > 0) {
+        resultLines.push(
+          `<p class="text-indigo-700"><strong class="font-bold">• Ya estaban elegidas (${alreadyMarked.length}):</strong> ${alreadyMarked.join(", ")}</p>`
+        );
+      }
+      if (outOfStock.length > 0) {
+        resultLines.push(
+          `<p class="text-rose-600"><strong class="font-bold">✕ Agotadas (${outOfStock.length}):</strong> ${outOfStock.join(", ")}</p>`
+        );
+      }
+      if (outOfRange.length > 0) {
+        resultLines.push(
+          `<p class="text-slate-500"><strong class="font-bold">? Fuera del álbum (${outOfRange.length}):</strong> ${outOfRange.join(", ")}</p>`
+        );
+      }
+
+      dom.pasteResult.innerHTML = resultLines.join("");
+      dom.pasteResult.classList.remove("hidden");
+
+      if (newlyMarked.length > 0) {
+        showToast(`Se marcaron ${newlyMarked.length} figuritas disponibles`);
+      } else if (outOfStock.length > 0 && alreadyMarked.length === 0) {
+        showToast("Las figuritas buscadas están agotadas");
+      } else {
+        showToast("Tu selección ya estaba al día");
+      }
+    }
+
+    function sendToWhatsApp() {
+      const summary = calculateOrderSummary();
+      if (summary.totalCount === 0) {
+        showToast("Selecciona al menos una figurita primero");
+        return;
+      }
+      const message = buildWhatsAppMessage();
+      const cleanPhone = String(CONFIG.whatsapp).replace(/\D/g, "");
+      const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function copyOrderText() {
+      const summary = calculateOrderSummary();
+      if (summary.totalCount === 0) {
+        showToast("No hay figuritas seleccionadas para copiar");
+        return;
+      }
+
+      const message = buildWhatsAppMessage();
+      try {
+        const tempTextarea = document.createElement("textarea");
+        tempTextarea.value = message;
+        tempTextarea.style.position = "fixed";
+        tempTextarea.style.opacity = "0";
+        document.body.appendChild(tempTextarea);
+        tempTextarea.focus();
+        tempTextarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextarea);
+        showToast("¡Pedido copiado al portapapeles!");
+      } catch (err) {
+        showToast("No se pudo copiar automáticamente");
+      }
+    }
+
+    function openSummaryModal() {
+      renderSummaryModal();
+      dom.summaryModal.classList.remove("hidden");
+    }
+
+    function closeSummaryModal() {
+      dom.summaryModal.classList.add("hidden");
+    }
+
+    /* =========================================================================
+       6. EVENTOS E INICIALIZACIÓN
+       ========================================================================= */
+    function bindEvents() {
+      // Buscador instantáneo
+      dom.searchInput.addEventListener("input", (e) => {
+        state.searchQuery = e.target.value;
+        dom.clearSearchBtn.classList.toggle("hidden", !state.searchQuery);
+        renderGrid();
+      });
+
+      dom.clearSearchBtn.addEventListener("click", () => {
+        state.searchQuery = "";
+        dom.searchInput.value = "";
+        dom.clearSearchBtn.classList.add("hidden");
+        renderGrid();
+        dom.searchInput.focus();
+      });
+
+      // Panel "Pegar lista de faltantes"
+      dom.togglePasteBtn.addEventListener("click", () => {
+        const isHidden = dom.pastePanel.classList.toggle("hidden");
+        dom.pasteChevron.classList.toggle("rotate-180", !isHidden);
+        if (!isHidden) {
+          dom.pasteTextarea.focus();
+        }
+      });
+
+      dom.pasteClearBtn.addEventListener("click", () => {
+        dom.pasteTextarea.value = "";
+        dom.pasteResult.classList.add("hidden");
+        dom.pasteTextarea.focus();
+      });
+
+      dom.pasteApplyBtn.addEventListener("click", handlePasteList);
+
+      // Restablecer filtros desde estado vacío
+      dom.resetFiltersBtn.addEventListener("click", () => {
+        state.filter = "all";
+        state.searchQuery = "";
+        dom.searchInput.value = "";
+        dom.clearSearchBtn.classList.add("hidden");
+        renderFilterPills();
+        renderGrid();
+      });
+
+      // Abrir / cerrar modal de detalle
+      dom.stickyDetailTrigger.addEventListener("click", openSummaryModal);
+      dom.headerSummaryBtn.addEventListener("click", openSummaryModal);
+      dom.closeModalBtn.addEventListener("click", closeSummaryModal);
+      dom.summaryModal.addEventListener("click", (e) => {
+        if (e.target === dom.summaryModal) closeSummaryModal();
+      });
+
+      // Copiar y enviar por WhatsApp
+      dom.copyOrderBtn.addEventListener("click", copyOrderText);
+      dom.whatsappSendBtn.addEventListener("click", sendToWhatsApp);
+      dom.modalWhatsappBtn.addEventListener("click", sendToWhatsApp);
+
+      // Modal de confirmación para limpiar todo
+      dom.clearAllBtn.addEventListener("click", () => {
+        dom.confirmClearModal.classList.remove("hidden");
+      });
+
+      dom.cancelClearBtn.addEventListener("click", () => {
+        dom.confirmClearModal.classList.add("hidden");
+      });
+
+      dom.confirmClearModal.addEventListener("click", (e) => {
+        if (e.target === dom.confirmClearModal) {
+          dom.confirmClearModal.classList.add("hidden");
+        }
+      });
+
+      dom.confirmClearBtn.addEventListener("click", () => {
+        CONFIG.albumes.forEach((album) => {
+          state.selectedByAlbum[album.id].clear();
+        });
+        saveSelection();
+        dom.confirmClearModal.classList.add("hidden");
+        renderAll();
+        showToast("Selección limpiada");
+      });
+    }
+
+    // Arranque de la aplicación
+    document.addEventListener("DOMContentLoaded", () => {
+      dom.storeTitle.textContent = CONFIG.nombreTienda;
+      document.title = CONFIG.nombreTienda;
+      initAlbumData();
+      bindEvents();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
